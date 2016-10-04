@@ -24,7 +24,7 @@ y1=ww2/2+thick/2;//-ofo/4+thick/2;
 
 
 
-
+/*
 difference() {
 
 linear_extrude(height = hh+thick, twist = 0, slices = hh*10) {
@@ -53,3 +53,5 @@ linear_extrude(height = hh+thick, twist = 0, slices = hh*10) {
  rotate([0,90,0])cable_hole(cabw,cabh,ll+2*ofo);
 
 }
+
+*/

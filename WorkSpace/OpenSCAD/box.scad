@@ -21,18 +21,55 @@ difference() {
 		cube([blong,bwidth+bthick*2,
 			bhight+bthick*2]);
 	}
-    
 	//内盒，挖空。
 	translate([bthick,bthick,bthick])
 	{	color([0.2,0.8,0.8])
 		cube([blong - bthick * 2,bwidth,bhight+ bthick]);
 	}
     
+    //卡扣滑道左
+    translate([blong - 8,ylong/2 - 2,0])
+	{	
+        color([0.2,0.8,0.8])
+		cube([4,8,bthick + 1]);
+	}
+    translate([blong - 16,ylong/2 + 2,0])
+	{	
+        color([0.2,0.8,0.8])
+		cube([8,4,bthick + 1]);
+	}
+    translate([blong - 16,ylong/2 - 3.5,0])
+	{	
+        color([0.2,0.8,0.8])
+		cube([4,15,bthick + 1]);
+	}
+    
+    //卡扣滑道右
+    translate([4,ylong/2 - 6,0])
+	{	
+        color([0.2,0.8,0.8])
+		cube([4,8,bthick + 1]);
+	}
+   
+    translate([8,ylong/2 - 6,0])
+	{	
+        color([0.2,0.8,0.8])
+		cube([8,4,bthick + 1]);
+	}
+    
+    translate([12,ylong/2 - 11.5,0])
+	{	
+        color([0.2,0.8,0.8])
+		cube([4,15,bthick + 1]);
+	}
+    
+    
+    
     //盒子挖空通风
     translate([blong/2,ylong/2 - 8,0])
 	{	color([0.6,0.3,0.8])
 		cube([1,15,bthick + 2]);
-	}
+}
      
     translate([blong/2 - 8,ylong/2 - 8,0])
 	{	color([0.6,0.3,0.8])
@@ -46,12 +83,10 @@ difference() {
     
     
     //盒子侧壁挖空通风
-    
     translate([blong/2 - 20,0,bhight/2 + 1 ])
 	{	color([0.6,0.3,0.8])
 		cube([40,50,bthick]);
 	}
-    
     
 }
 
@@ -103,13 +138,16 @@ difference() {
 		cube([bthick,bwidth,bthick]);
    }
    
+   
    translate([bthick * 2,bthick,bthick])
    {	color([0.2,0.5,0.2])
 		cube([blong_inter - bthick * 2,bthick,bthick]);
    }
    
+   
    translate([bthick * 2,bwidth,bthick])
-   {	color([0.2,0.5,0.2])
+   {
+        color([0.2,0.5,0.2])
 		cube([blong_inter - bthick * 2,bthick,bthick]);
    }
 
