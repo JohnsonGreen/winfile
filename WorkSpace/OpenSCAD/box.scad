@@ -1,155 +1,172 @@
 
 
 //常量定义
-athick=2;	//盖子厚度
-bthick=2;	//盒壁厚度
-bwidth=30;	//内径净宽
-bhight=21;	//内径净高
+thick = 2;	        //盒壁厚度,盒子外圆角半径
+width = 30;	       //内径净宽
+hight = 21;	       //内径净高
+long = 71;         //内径净长
+ 
+hh = 6.5;          //slices倍数
 
-blong_inter=71;//内径净长
-//外径长度＝底厚＋内径＋挡格＋盖子厚度
-blong=bthick * 2 + blong_inter;
+xlong=thick * 2 + long;   //外径长度＝底厚＋内径长度＋盖子厚度
+ylong = width+thick*2;   //外径宽度 = 底厚＋内径宽度＋盖子厚度
+zlong = hight + thick*2;
 
-ylong = bwidth+bthick*2;
 
-//======================================
-//盒子体，采用挖空切割方式造型。
+//卡扣中心柱厚度
+bathc = 3;
+
+//卡扣底部长方体长度
+balon = 15;
+
+
+
+//---------------------------------------盒子部分
+
 difference() {
-	//外盒
-	translate([0,0,0])
-	{	color([0.8,0.8,0.8])
-		cube([blong,bwidth+bthick*2,
-			bhight+bthick*2]);
-	}
+	
+
+    //外盒
+    linear_extrude(height = hight + thick * 2, twist = 0, slices = hh*10) {
+    offset(r = thick,$fn=100) {
+      square([long ,width], center = false);
+    }
+   }  
+
+
 	//内盒，挖空。
-	translate([bthick,bthick,bthick])
-	{	color([0.2,0.8,0.8])
-		cube([blong - bthick * 2,bwidth,bhight+ bthick]);
+	translate([0,0,thick])
+	{	
+		cube([long,width,hight+ thick]);
 	}
     
-    //卡扣滑道左
-    translate([blong - 8,ylong/2 - 2,0])
+
+    //卡扣滑道前
+    translate([long - bathc * 2, (width - bathc)/2,0])
 	{	
-        color([0.2,0.8,0.8])
-		cube([4,8,bthick + 1]);
+		cube([bathc , bathc * 2 ,thick + 1]);
 	}
-    translate([blong - 16,ylong/2 + 2,0])
+    translate([long - bathc * 4,(width + bathc)/2,0])
 	{	
-        color([0.2,0.8,0.8])
-		cube([8,4,bthick + 1]);
+       
+		cube([bathc * 2,bathc ,thick + 1]);
 	}
-    translate([blong - 16,ylong/2 - 3.5,0])
+
+    translate([long - bathc * 4, (width + bathc)/2 - (balon - bathc)/2 ,0])
 	{	
-        color([0.2,0.8,0.8])
-		cube([4,15,bthick + 1]);
+		cube([bathc,balon ,thick + 1]);
 	}
     
-    //卡扣滑道右
-    translate([4,ylong/2 - 6,0])
+
+
+    //卡扣滑道后
+    translate([bathc, width/2 - 1.5 * bathc,0])
 	{	
-        color([0.2,0.8,0.8])
-		cube([4,8,bthick + 1]);
+		cube([bathc, bathc * 2,thick + 1]);
 	}
    
-    translate([8,ylong/2 - 6,0])
+    translate([bathc * 2, width/2 - 1.5 * bathc,0])
 	{	
-        color([0.2,0.8,0.8])
-		cube([8,4,bthick + 1]);
+		cube([bathc * 2,bathc,thick + 1]);
 	}
     
-    translate([12,ylong/2 - 11.5,0])
+    translate([bathc * 3, width/2 - 1.5 * bathc - (balon - bathc) /2,0])
 	{	
-        color([0.2,0.8,0.8])
-		cube([4,15,bthick + 1]);
+		cube([bathc,balon,thick + 1]);
 	}
     
     
     
-    //盒子挖空通风
-    translate([blong/2,ylong/2 - 8,0])
-	{	color([0.6,0.3,0.8])
-		cube([1,15,bthick + 2]);
-}
+    //盒子底部挖空通风
+    translate([long/2, width/2 - 8,0])
+	{	
+		cube([1,16,thick + 2]);
+    }
      
-    translate([blong/2 - 8,ylong/2 - 8,0])
-	{	color([0.6,0.3,0.8])
-		cube([1,15,bthick + 2]);
+    translate([long/2 - 8,width/2 - 8,0])
+	{	
+		cube([1,16,thick + 2]);
 	}
     
-    translate([blong/2 + 8,ylong/2 - 8,0])
-	{	color([0.6,0.3,0.8])
-		cube([1,15,bthick + 2]);
+    translate([long/2 + 8,width/2 - 8,0])
+	{	
+		cube([1,16,thick + 2]);
 	}
     
-    
+
     //盒子侧壁挖空通风
-    translate([blong/2 - 20,0,bhight/2 + 1 ])
-	{	color([0.6,0.3,0.8])
-		cube([40,50,bthick]);
+    translate([xlong/2 - 20,-3,zlong/2 - 1 ])
+	{	
+		cube([40,50,thick]);
 	}
     
 }
 
-translate([0,ylong + 4,35]){
+
+
+
+//------------------------------------盖子部分
+
+translate([0,ylong + 4,0]){
 difference() {
-    //
-	translate([0,0,0])
-	{	color([0.5,0.5,0.5])
-		cube([blong, ylong ,athick]);
-	}
+    
+    linear_extrude(thick, twist = 0, slices = hh*10) {
+    offset(r = thick,$fn=100) {
+      square([long ,width], center = false);
+    }
+   }  
     
 	
     //盖子挖空通风
-    translate([blong/2,ylong/2 - 8,0])
-	{	color([0.6,0.3,0.8])
-		cube([1,15,bthick + 2]);
+    translate([long/2,width/2 - 8,0])
+	{	
+		cube([1,16,thick + 2]);
 	}
     
-    translate([blong/2 - 4,ylong/2 - 7,0])
-	{	color([0.6,0.3,0.8])
-		cube([1,13,bthick + 2]);
+    translate([long/2 - 4,width/2 - 7,0])
+	{	
+		cube([1,14,thick + 2]);
 	}
-    translate([blong/2 - 8,ylong/2 - 6,0])
-	{	color([0.6,0.3,0.8])
-		cube([1,11,bthick + 2]);
-	}
-    
-    translate([blong/2 - 12,ylong/2 - 5,0])
-	{	color([0.6,0.3,0.8])
-		cube([1,9,bthick + 2]);
+    translate([long/2 - 8,width/2 - 6,0])
+	{	
+		cube([1,12,thick + 2]);
 	}
     
-    translate([blong/2 - 16,ylong/2 - 4,0])
-	{	color([0.6,0.3,0.8])
-		cube([1,7,bthick + 2]);
+    translate([long/2 - 12,width/2 - 5,0])
+	{	
+		cube([1,10,thick + 2]);
+	}
+    
+    translate([long/2 - 16,width/2 - 4,0])
+	{	
+		cube([1,8,thick + 2]);
 	}
     
   }
   
    //形成边角挡格
-   translate([bthick,bthick,bthick])
-   {	color([0.2,0.5,0.2])
-		cube([bthick,bwidth,bthick]);
-   }
-   
-   translate([blong - bthick * 2,bthick,bthick])
+   translate([0,0,thick])
    {	
-        color([0.2,0.5,0.2])
-		cube([bthick,bwidth,bthick]);
+		cube([thick,width,thick]);
+   }
+   
+   translate([long - thick,0,thick])
+   {	
+       
+		cube([thick,width,thick]);
    }
    
    
-   translate([bthick * 2,bthick,bthick])
-   {	color([0.2,0.5,0.2])
-		cube([blong_inter - bthick * 2,bthick,bthick]);
+   translate([thick ,0,thick])
+   {	
+		cube([long - thick * 2,thick,thick]);
    }
    
    
-   translate([bthick * 2,bwidth,bthick])
+   translate([thick ,width - thick,thick])
    {
-        color([0.2,0.5,0.2])
-		cube([blong_inter - bthick * 2,bthick,bthick]);
+       
+		cube([long - thick * 2,thick,thick]);
    }
 
-   
 }
