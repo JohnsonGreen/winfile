@@ -2,9 +2,9 @@
 
 //常量定义
 thick = 2;	        //盒壁厚度,盒子外圆角半径
-width = 30;	       //内径净宽
-hight = 21;	       //内径净高
-long = 71;         //内径净长
+width = 31.2;	       //内径净宽
+hight = 43;	       //内径净高
+long = 71.8;         //内径净长
  
 hh = 6.5;          //slices倍数
 
@@ -14,7 +14,7 @@ zlong = hight + thick*2;
 
 
 //卡扣中心柱厚度
-bathc = 3;
+bathc = 4;
 
 //卡扣底部长方体长度
 balon = 15;
@@ -145,28 +145,27 @@ difference() {
   }
   
    //形成边角挡格
-   translate([0,0,thick])
+   translate([0 + 0.05,0.05,thick])
    {	
-		cube([thick,width,thick]);
+		cube([thick,width - 0.1,thick]);
    }
    
-   translate([long - thick,0,thick])
+   translate([long - thick - 0.1,0.05,thick])
    {	
        
-		cube([thick,width,thick]);
+		cube([thick,width - 0.1,thick]);
    }
    
    
-   translate([thick ,0,thick])
+   translate([thick + 0.05 ,0,thick])
    {	
-		cube([long - thick * 2,thick,thick]);
+		cube([long - thick * 2 - 0.1,thick,thick]);
    }
    
    
-   translate([thick ,width - thick,thick])
+   translate([thick + 0.05 ,width - thick - 0.05,thick])
    {
-       
-		cube([long - thick * 2,thick,thick]);
+		cube([long - thick * 2 - 0.1,thick,thick]);
    }
 
 }

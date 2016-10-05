@@ -12,7 +12,8 @@ module cable_hole(w,h,zth){
 linear_extrude(height = zth, twist = 0, slices = zth*10) {
     offset(r = ofx,$fn=100) {
       square([cabh-2*ofx,cabw-2*ofx], center = true);
-    }}
+    }
+    }
 }
 
 
@@ -24,7 +25,7 @@ y1=ww2/2+thick/2;//-ofo/4+thick/2;
 
 
 
-/*
+
 difference() {
 
 linear_extrude(height = hh+thick, twist = 0, slices = hh*10) {
@@ -54,4 +55,4 @@ linear_extrude(height = hh+thick, twist = 0, slices = hh*10) {
 
 }
 
-*/
+
