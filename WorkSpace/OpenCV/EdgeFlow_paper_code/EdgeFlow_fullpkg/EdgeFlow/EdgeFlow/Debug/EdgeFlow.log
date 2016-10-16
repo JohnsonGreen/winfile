@@ -1,0 +1,29 @@
+﻿生成启动时间为 2014/5/26 14:58:42。
+     1>项目“E:\Project\yearPicture\src\EdgeFlow\EdgeFlow\EdgeFlow.vcxproj”在节点 2 上(build 个目标)。
+     1>InitializeBuildStatus:
+         正在创建“Debug\EdgeFlow.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+       ClCompile:
+         所有输出均为最新。
+       ManifestResourceCompile:
+         所有输出均为最新。
+       Link:
+         所有输出均为最新。
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"E:\Project\yearPicture\src\EdgeFlow\Debug\EdgeFlow.exe" /INCREMENTAL /NOLOGO opencv_core244d.lib opencv_highgui244d.lib opencv_imgproc244d.lib opencv_core244.lib opencv_highgui244.lib opencv_imgproc244.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\EdgeFlow.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"E:\Project\yearPicture\src\EdgeFlow\Debug\EdgeFlow.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"E:\Project\yearPicture\src\EdgeFlow\Debug\EdgeFlow.lib" /MACHINE:X86 Debug\EdgeFlow.exe.embed.manifest.res
+         Debug\EdgeFlow.obj
+         Debug\ETF.obj
+         Debug\fdog.obj
+         Debug\stdafx.obj
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug\EdgeFlow.exe.embed.manifest" /manifest Debug\EdgeFlow.exe.intermediate.manifest
+         所有输出均为最新。
+       LinkEmbedManifest:
+         所有输出均为最新。
+         EdgeFlow.vcxproj -> E:\Project\yearPicture\src\EdgeFlow\Debug\EdgeFlow.exe
+       FinalizeBuildStatus:
+         正在删除文件“Debug\EdgeFlow.unsuccessfulbuild”。
+         正在对“Debug\EdgeFlow.lastbuildstate”执行 Touch 任务。
+     1>已完成生成项目“E:\Project\yearPicture\src\EdgeFlow\EdgeFlow\EdgeFlow.vcxproj”(build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:00.54
