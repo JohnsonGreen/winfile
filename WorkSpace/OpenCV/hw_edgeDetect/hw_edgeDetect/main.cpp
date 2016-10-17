@@ -67,48 +67,42 @@ void prewitt(Mat src)
 }
 
 
-//如果源图像是8位的，为避免溢出，目标图像深度必须是16S，或32位
-void sobel(IplImage *src, IplImage *dst)
+void mySobel(Mat src)
 {
-	//为soble微分图像申请空间，创建图片函数  
-	IplImage *pSobelImg_dx = cvCreateImage(cvGetSize(src), 32, 1);
-	IplImage *pSobelImg_dy = cvCreateImage(cvGetSize(src), 32, 1);
-	IplImage *pSobelImg_dxdy = cvCreateImage(cvGetSize(src), 32, 1);
-
-	//用sobel算子计算两个方向的微分  
-	cvSobel(src, pSobelImg_dx, 1, 0, 3);
-	cvSobel(src, pSobelImg_dy, 0, 1, 3);
-
-	//total gradient = sqrt(horizontal*horizontal+vertical*vertical)  
-	int i, j;
-	double v1, v2, v;
-	for (i = 0; i < src->height; i++)
+	Mat resultImage = src;
+	cvtColor(src, resultImage, CV_BGR2GRAY);
+	Mat H = resultImage, V = resultImage, HV = resultImage;
+	Sobel(resultImage, H, resultImage.depth(), 0, 1);
+	Sobel(resultImage, V, resultImage.depth(), 1, 0);
+	for (int i = 0; i<src.rows; i++)
 	{
-		for (j = 0; j < src->width; j++)
+		for (int j = 0; j<src.cols; j++)
 		{
-			v1 = cvGetReal2D(pSobelImg_dx, i, j);
-			v2 = cvGetReal2D(pSobelImg_dy, i, j);
-			v = sqrt(v1*v1 + v2*v2);
-			/*  if(v>100) v = 255;
-			else v = 0;*/
-			cvSetReal2D(pSobelImg_dxdy, i, j, v);
+			HV.at<uchar>(i, j) = sqrt(H.at<uchar>(i, j)*H.at<uchar>(i, j) + V.at<uchar>(i, j)*V.at<uchar>(i, j));
 		}
 	}
-	cvConvertScale(pSobelImg_dxdy, dst);   //将图像转化为8位  
-	double min_val = 0, max_val = 0;//取图并显示像中的最大最小像素值  
-	cvMinMaxLoc(pSobelImg_dxdy, &min_val, &max_val);
-	printf("max_val = %f\nmin_val = %f\n", max_val, min_val);
+	normalize(HV, HV, 255, 0, CV_MINMAX);
 
-	//归一化  
-	cvNormalize(dst, dst, 0, 255, CV_MINMAX, 0);
+	imwrite("prewitt.jpg", HV);   //把图像存入文件  
+	imshow("dst", HV);
+	waitKey();
 }
+
+
+void myCanny(Mat src) {
+
+	Mat dst;
+	Canny(src, dst, 150, 200);   //边缘检测
+	imwrite("prewitt.jpg", dst);   //把图像存入文件  
+	imshow("dst", dst);
+	waitKey();
+}
+
 
 
 
 int main()
 {
-
-	
 
 	//连续读取三张图片
 	for (int i = 0; i < 3; i++) {
@@ -129,59 +123,12 @@ int main()
 
 
 		imshow("Source", image);
-		prewitt(image);
+		//prewitt(image);
+		//mySobel(image);
+		myCanny(image);
 		
 	}
 	
-
-
-	
-
-
-	/*  
-	Mat src = imread("misaka.jpg");
-	Mat dst;
-
-	//输入图像
-	//输出图像
-	//输入图像颜色通道数
-	//x方向阶数
-	//y方向阶数
-	Sobel(src, dst, src.depth(), 1, 1);
-	imwrite("sobel.jpg", dst);
-
-	//输入图像
-	//输出图像
-	//输入图像颜色通道数
-	Laplacian(src, dst, src.depth());
-	imwrite("laplacian.jpg", dst);
-
-	//输入图像
-	//输出图像
-	//彩色转灰度
-	cvtColor(src, src, CV_BGR2GRAY);  //canny只处理灰度图
-
-									  //输入图像
-									  //输出图像
-									  //低阈值
-									  //高阈值，opencv建议是低阈值的3倍
-									  //内部sobel滤波器大小
-	Canny(src, dst, 50, 150, 3);
-	imwrite("canny.jpg", dst);
-
-	imshow("dst", dst);
-	waitKey();
-
-	return 0;
-
-	*/
-
-
-
-
-
-
-
 
 
 

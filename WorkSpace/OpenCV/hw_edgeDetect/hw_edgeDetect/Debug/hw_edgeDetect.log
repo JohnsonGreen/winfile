@@ -2,5 +2,6 @@
 g:\workspace\opencv\hw_edgedetect\hw_edgedetect\main.cpp(58): warning C4244: “=”: 从“float”转换到“int”，可能丢失数据
 g:\workspace\opencv\hw_edgedetect\hw_edgedetect\main.cpp(47): warning C4101: “j”: 未引用的局部变量
 g:\workspace\opencv\hw_edgedetect\hw_edgedetect\main.cpp(47): warning C4101: “i”: 未引用的局部变量
-g:\workspace\opencv\hw_edgedetect\hw_edgedetect\main.cpp(128): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+g:\workspace\opencv\hw_edgedetect\hw_edgedetect\main.cpp(81): warning C4244: “=”: 从“double”转换到“uchar”，可能丢失数据
+g:\workspace\opencv\hw_edgedetect\hw_edgedetect\main.cpp(120): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
   hw_edgeDetect.vcxproj -> G:\WorkSpace\OpenCV\hw_edgeDetect\Debug\hw_edgeDetect.exe
