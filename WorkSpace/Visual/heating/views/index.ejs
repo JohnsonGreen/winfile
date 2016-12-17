@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <script src="/javascripts/jquery.min.js" charset="utf-8"></script>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="stylesheet" href="/stylesheets/jquery.range.css">
+    <script src="/javascripts/jquery.range.js"></script>
+    <script src="/javascripts/d3.js" charset="utf-8"></script>
+
+    <style>
+      body{
+        margin:10;
+        padding:0;
+      }
+      #tooltip {
+        position: absolute;
+        text-align: center;
+        padding: 20px;
+        margin: 10px;
+        font: 12px sans-serif;
+        background: lightsteelblue;
+        border: 1px;
+        border-radius: 2px;
+        pointer-events: none;
+      }
+      #tooltip h4{
+        margin:0;
+        font-size:14px;
+      }
+      #tooltip{
+        background:rgba(0,0,0,0.9);
+        border:1px solid grey;
+        border-radius:5px;
+        font-size:12px;
+        width:auto;
+        padding:4px;
+        color:white;
+        opacity:0;
+      }
+      #tooltip table{
+        table-layout:fixed;
+      }
+      #tooltip tr td{
+        padding:0;
+        margin:0;
+      }
+      #tooltip tr td:nth-child(1){
+        width:50px;
+      }
+      #tooltip tr td:nth-child(2){
+        text-align:center;
+      }
+      .slide {
+        width:300px;
+        height:200px;
+
+      }
+      #historgram{
+        position:absolute;
+        left:650px;
+        top: 0px;
+      }
+      .his{
+        position:absolute;
+        left:440px;
+        top: 50px;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div id="tooltip"></div>
+    <div class="slide">
+    <div>
+      <div><h2>年份</h2></div><br>
+         <input type="hidden" class="slider-year" value="2010" />
+      <br>
+    </div>
+    <div>
+      <div><h2>月份</h2></div><br>
+          <input type="hidden" class="slider-month" value="1" />
+      <br>
+    </div>
+    </div>
+
+     <script src="/javascripts/drawmap.js"></script>
+     <script src="/javascripts/historgram.js"></script>
+     <script src="/javascripts/changePoints.js"></script>
+
+     <script type="text/javascript">
+         var  year = 2010,month = 1;
+         var data = null;
+         $.get("/problem?year="+parseInt(year)+"&&month="+parseInt(month), function(result){
+             historgram(result);
+         });
+
+     </script>
+
+    <div class="his">
+      <h3>不同问题数量直方图：</h3>
+    </div>
+
+
+  </body>
+</html>
