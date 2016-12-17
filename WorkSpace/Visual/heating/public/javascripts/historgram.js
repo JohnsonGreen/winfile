@@ -50,7 +50,6 @@ function historgram( result ){
     var datatext = data.concat(data);
 
 
-
     graphics.selectAll("text")
         .data(datatext)
         .enter()

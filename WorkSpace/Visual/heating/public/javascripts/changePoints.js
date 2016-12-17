@@ -55,9 +55,12 @@ function heatPoint(dajson){
     {
 
 
-        // 设置颜色比例尺
-        var colorA = d3.hsl(60,1.0,0.5);        // 红色
-        var colorB = d3.hsl(60,0.1,0.5);        // 白色
+        // // 设置颜色比例尺
+        // var colorA = d3.hsl(60,1.0,0.5);        // 红色
+        // var colorB = d3.hsl(60,0.1,0.5);        // 白色
+
+        var colorB = d3.rgb(0,255,0);    //绿色
+        var colorA = d3.rgb(255,170,0);    //红色
 
         var min=0,max=0;
         for(var i =0; i < place[1].length;i++){
@@ -69,8 +72,8 @@ function heatPoint(dajson){
         }
 
         console.log(place[1]);
-        console.log("min "+ min);
-        console.log("max "+ max);
+       // console.log("min "+ min);
+        //console.log("max "+ max);
 
         // computeColor(i)，i为0~1，输出colorA、colorB之间的数
         var computeColor = d3.interpolate(colorB,colorA);
@@ -86,16 +89,19 @@ function heatPoint(dajson){
                 .enter()
                 .append("path")
                 .attr("stroke", "#000")
-                .attr("stroke-width", 1)
+                .attr("stroke-width", 0.1)
                 .attr("fill", function (d, i) {
+
+                    console.log("i: " + i);
                     var m = compute(place[1][i].cnt);
+
                     console.log(place[1][i].cnt);
                     return computeColor(m);
                 })
                 .attr("d", path)
                 .on("mouseover", function (d, i) {
                     d3.select(this)
-                        .attr("fill", "yellow");
+                        .attr("fill", "steelblue");
 
                     d3.select("#tooltip").html(
                         "<h4>" + "adsjfjds" + "</h4><table>" +
@@ -118,13 +124,12 @@ function heatPoint(dajson){
 
 
 
-            $('.location').css({position: 'absolute',zIndex:9999});
+           // $('.location').css({position: 'absolute',zIndex:9999});
 
             var location = svg.selectAll("location")
                 .data(place[0])
                 .enter()
                 .append("g")
-                .attr("class","location")
                 .attr("transform",function(d){
                     //计算标注点的位置
                     var coor = projection([d.LNG, d.LAT]); //经纬度的投影
@@ -138,6 +143,43 @@ function heatPoint(dajson){
                 {
                     return"gray";
                 });
+
+
+            //插入天津区县地名
+            var location = svg.selectAll("location")
+                .data(root.features)
+                .enter()
+                .append("g")
+                .attr("class","location")
+                .attr("transform",function(d){
+                    //计算标注点的位置
+                    var coor = projection([d.properties.cp[0], d.properties.cp[1]]); //经纬度的投影
+                    return "translate("+ coor[0] + "," + coor[1] +")";
+                });
+
+            //画圆作为标注
+            location.append("circle")
+                .attr("r",5) //半径
+                .style("fill",function(d,i)
+                {
+                    return"gray";
+                });
+
+            //添加文字
+            location.append("text")
+                .text(function(d)
+                    {
+                        return d.properties.name;
+                    }
+                )
+                .attr("fill",function(d,i)
+                {
+                    return"black";
+                })
+                .attr("text-anchor","middle")
+                .attr("font-family","sans-setif")
+                .attr("font-size","14px")
+                .attr("font-weight","bold");
 
 
         });

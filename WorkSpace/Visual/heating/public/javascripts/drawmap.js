@@ -77,14 +77,14 @@ d3.json("/javascripts/tianjin.json", function(error, root) {
         .enter()
         .append("path")
         .attr("stroke","#000")
-        .attr("stroke-width",1)
+        .attr("stroke-width",0.1)
         .attr("fill", function(d,i){
             return color(i);
         })
         .attr("d", path )
         .on("mouseover",function(d,i){
             d3.select(this)
-                .attr("fill","yellow");
+                .attr("fill","steelblue");
 
             d3.select("#tooltip").html(
                 "<h4>"+"adsjfjds"+"</h4><table>"+

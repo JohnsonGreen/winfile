@@ -26,9 +26,9 @@ router.get('/date', function(req, res, next) {
             var place = ['河西区','河东区','南开区','河北区','红桥区','和平区'];
 
             var quer = "SELECT count(WORKFORMID)  AS cnt FROM visual_heating WHERE STANDARDADDRESS LIKE '"+place[0]+"%' AND  WORKFORMID LIKE '"+ req.query.year.toString() + req.query.month.toString()+"%' ";
-            for(var i =1;i < place.length;i++){
-                quer += ' UNION ' + "SELECT count(DISTINCT WORKFORMID) AS cnt FROM visual_heating WHERE STANDARDADDRESS LIKE '"+ place[i]+"%' AND  WORKFORMID LIKE '"+ req.query.year.toString() + req.query.month.toString()+"%' ";
-            }
+             for(var i =1;i < place.length;i++){
+                 quer += ' UNION ALL ' + "SELECT count(WORKFORMID) AS cnt FROM visual_heating WHERE STANDARDADDRESS LIKE '"+ place[i]+"%' AND  WORKFORMID LIKE '"+ req.query.year.toString() + req.query.month.toString()+"%' ";
+             }
             console.log(quer);
 
             db.query(quer , function(er, d) {
@@ -96,11 +96,11 @@ router.get('/problem',function(req, res, next){
     var totalnum = 0;
     if(flag == 1){
 
-        qstring = querystring(temperature,where) +' UNION ' + querystring(leak,where ) + ' UNION ' + querystring(cover,where ) +' UNION '+ querystring(allProblems,where );
+        qstring = querystring(temperature,where) +' UNION ALL' + querystring(leak,where ) + ' UNION  ALL ' + querystring(cover,where ) +' UNION  ALL '+ querystring(allProblems,where );
         console.log(qstring);
 
     }else if(flag == 0){  //均为0
-        qstring = querystring(temperature) +' UNION ' + querystring(leak) + ' UNION ' + querystring(cover) +' UNION '+ querystring(allProblems);
+        qstring = querystring(temperature) +' UNION  ALL ' + querystring(leak) + ' UNION  ALL ' + querystring(cover) +' UNION  ALL '+ querystring(allProblems);
         console.log(qstring);
     }
 
