@@ -4,25 +4,82 @@
 //ajax异步加载
 function put(year,month){
 
-    $.get("/problem?year="+parseInt(year)+"&&month="+parseInt(month), function(result){
-        historgram(result);
-    });
 
-    heatPoint("/date?year="+parseInt(year)+"&&month="+parseInt(month));
+    if(year != null && month != null){
+        $.get("/problem?year="+parseInt(year)+"&&month="+parseInt(month), function(result){
+            historgram(result);
+        });
+        heatPoint("/date?year="+parseInt(year)+"&&month="+parseInt(month));
+    }else if(year == null && month != null){
+
+        $.get("/problem?month="+parseInt(month), function(result){
+            historgram(result);
+        });
+
+        heatPoint("/date?month="+parseInt(month));
+    }else if(year != null && month == null){
+        $.get("/problem?year="+parseInt(year), function(result){
+            historgram(result);
+        });
+        heatPoint("/date?year="+parseInt(year));
+    }else{
+        $.get("/problem", function(result){
+            historgram(result);
+        });
+        heatPoint("/date");
+    }
 
 }
+
+$('#hid-month').hide(600);
+$('.slider-choice').jRange({
+    from: 0,
+    to: 3,
+    step: 1,
+    scale: ['年份','月份','年月','总体'],
+    format: '%s',
+    width: 300,
+    showLabels: false,
+    snap: true,
+    onstatechange:function(){
+
+        var choice = $('.slider-choice').val();
+        if(choice == '0'){
+            $('#hid-year').show(600);
+            $('#hid-month').hide(600);
+        }else if(choice == '1'){
+            $('#hid-month').show(600);
+            $('#hid-year').hide(600);
+        }else if(choice == '2'){
+            $('#hid-month').show(600);
+            $('#hid-year').show(600);
+        }else{
+            $('#hid-month').hide(600);
+            $('#hid-year').hide(600);
+            put(null,null);
+        }
+
+        console.log($('.slider-month').val());
+        console.log($('.slider-year').val());
+    }
+});
+
 $('.slider-year').jRange({
     from: 2010,
     to: 2012,
-    step: 1.0,
+    step: 1,
     scale: [2010,2011,2012],
     format: '%s',
     width: 300,
     showLabels: true,
     snap: true,
     onstatechange:function(){
-        put($('.slider-year').val(),$('.slider-month').val());
-
+        var choice = $('.slider-choice').val();
+        if(choice == '0'){
+            put($('.slider-year').val(),null);
+        }else if(choice == '2'){
+            put($('.slider-year').val(),$('.slider-month').val());
+        }
         console.log($('.slider-month').val());
         console.log($('.slider-year').val());
     }
@@ -39,8 +96,12 @@ $('.slider-month').jRange({
     snap: true,
     onstatechange:function(){
 
-        put($('.slider-year').val(),$('.slider-month').val());
-
+        var choice = $('.slider-choice').val();
+        if(choice == '1'){
+            put(null,$('.slider-month').val());
+        }else if(choice == '2'){
+            put($('.slider-year').val(),$('.slider-month').val());
+        }
         console.log($('.slider-month').val());
         console.log($('.slider-year').val());
     }

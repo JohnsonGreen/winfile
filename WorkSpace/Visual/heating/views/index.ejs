@@ -133,7 +133,7 @@
           stroke-width: 0;
       }
 
-        #hidyear #hidplace{
+       #hid-year #hid-month #hidyear #hidplace{
            diplay:none
          }
 
@@ -143,25 +143,28 @@
   <body>
     <div id="tooltip"></div>
     <div class="slide-map">
-        <div>
+
             <h5>选择</h5><br>
             <input type="hidden" class="slider-choice" value="0" />
             <br>
-        </div>
+
     <div>
+         <span id="hid-year">
       <h5>年份</h5><br>
          <input type="hidden" class="slider-year" value="2010" />
+         </span>
       <br>
     </div>
     <div>
+        <span id="hid-month">
       <h5>月份</h5><br>
           <input type="hidden" class="slider-month" value="1" />
+        </span>
       <br>
     </div>
     </div>
 
     <div class="slide-linechart">
-
             <h5>选择</h5>
             <input type="hidden" class="slider-line-choice" value="0" />
             <br>
@@ -206,19 +209,7 @@
 
             d3.json("/javascripts/test.json", function(error, root) {
 
-
-//            var data = [[]];
-//            for(var k = 0; k < 4;k++){
-//                data[k] = Array.apply(0, Array(12)).map(function(item, i) {
-//                    i++;
-//                    return {date: '2013-12-' + (i < 10 ? '0' + i : i), pv: parseInt(Math.random() * 900)}
-//                });
-//            }
-
                 var data = root[0].yar[0];
-
-
-            console.log(data);
 
             //定义每一条线的颜色
             var color = ['#CCFF33','#FFCC33','#FF9900','#FF99FF','#FF6600'];
@@ -234,13 +225,11 @@
                 width = 600 - margin.left - margin.right,
                 height = 300 - margin.top - margin.bottom;
 
-
             var x = d3.scale.linear()
                 .domain([1, 12])
                 .range([0, width]);
 
             var y = d3.scale.linear()
-            // .domain([0, 100])
                 .range([height, 0]);
 
             var xAxis = d3.svg.axis()
@@ -266,10 +255,6 @@
                 .y(function(d) { return y(d.pv); })
                 .interpolate('monotone');
 
-//            var flagLine = d3.svg.line()
-//                .x(function(d) { return x(d.x); })
-//                .y(function(d) { return y(d.y); });
-
             var container = d3.select('body')
                 .append('svg')
                 .attr('id','lineChart')
@@ -281,7 +266,6 @@
                     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
                 draw(data);
                slide(root[0]);
-
 
                 function draw(dta){
                  $('.linecha').remove();
@@ -302,9 +286,7 @@
                             max = temp;
                         }
                     }
-
                     y.domain([0, max]);
-
                     svg.append('text')
                         .attr('class', 'title')
                         .text('不同问题按月统计图')
@@ -318,7 +300,6 @@
                         .append('text')
                         .text('月份')
                         .attr('transform', 'translate(' + (width - 8 ) + ', -5)');
-
                     svg.append('g')
                         .attr('class', 'y axis linecha')
                         .call(yAxis)
@@ -334,7 +315,6 @@
                         .attr('class', 'grid linecha')
                         .call(yGridAxis.tickSize(-width, 0, 0).tickFormat(''));
 
-
                     for(var k = 0;k < dta.length;k++){
                         var path = svg.append('path')
                             .attr('class', 'line linecha')
@@ -348,7 +328,6 @@
                     for(var k = 0; k < dta.length;k++){
                         da = da.concat(dta[k]);
                     }
-
                     var  pro = ['不热','漏水','井盖','其他'];
                     svg.selectAll('circle')
                         .data(da)
@@ -376,7 +355,6 @@
                             d3.select("#tooltip").style("opacity", 0.0);
                         });
                 }
-
                 function slide(dta){
 
                     $('#hidplace').hide();
@@ -457,14 +435,10 @@
                             var pl = $('.slider-line-place').val();
                             var choice = $('.slider-line-choice').val();
                             if(choice == '1'){
-                                console.log(dta.place);
                                 draw(dta.place[parseInt(pl)]);
                             }else if(choice == '2'){
                                 var yr = $('.slider-line-year').val();
                                 yr = (parseInt(yr) + 2010).toString() ;
-                                console.log('yr' + yr);
-                                console.log('choice ' + choice);
-                                console.log(dta.placeYear[0]);
                                 draw(dta.placeYear[0][yr][parseInt(pl)]);
 
                             }

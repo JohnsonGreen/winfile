@@ -88,15 +88,11 @@ d3.json("/javascripts/tianjin.json", function(error, root) {
                 .attr("fill","steelblue");
 
             d3.select("#tooltip").html(
-                "<h4>"+"adsjfjds"+"</h4><table>"+
-                "<tr><td>区</td><td>"+ d.properties.name+"</td></tr>"+
-                "<tr><td>Average</td><td>"+"hasdjf"+"</td></tr>"+
-                "<tr><td>High</td><td>"+"dshjs"+"</td></tr>"+
+                "<h4>"+d.properties.name+"</h4><table>"+
                 "</table>"
             ).style("left",(d3.event.pageX)+"px")
                 .style("top",(d3.event.pageY+20)+"px")
                 .style("opacity",1.0);
-
         })
         .on("mouseout",function(d,i){
             d3.select(this)

@@ -16,25 +16,38 @@ router.get('/', function(req, res, next) {
 });
 
 
-
 router.get('/date', function(req, res, next) {
 
-    if(req.query.year != null && req.query.month != null){
 
-        if(req.query.month < 10){
-            req.query.month = '0' + req.query.month.toString();
-        }
-        var qstring = "SELECT  LNG,LAT  FROM  visual_heating WHERE WORKFORMID LIKE '"+ req.query.year.toString() + req.query.month.toString()+"%' ";
+        var qstring = null;
+        req.query.year = (req.query.year == null?  "____" : req.query.year.toString());
+        req.query.month = (req.query.month == null?  '' :   req.query.month < 10 ?  '0' + req.query.month.toString(): req.query.month);
+        console.log(req.query.month);
+        //if(req.query.year　!= null){
+             qstring = "SELECT  LNG,LAT  FROM  visual_heating WHERE WORKFORMID LIKE '"+ req.query.year + req.query.month+"%' ";
+        // }else{
+        //      qstring = "SELECT  LNG,LAT  FROM  visual_heating WHERE WORKFORMID LIKE '"+ "____" + req.query.month.toString()+"%' ";
+        // }
+
+
         console.log(qstring);
-
         db.query(qstring , function(err, data) {
             if (err) throw err;
             var place = ['河西区','河东区','南开区','河北区','红桥区','和平区'];
-
-            var quer = "SELECT count(WORKFORMID)  AS cnt FROM visual_heating WHERE STANDARDADDRESS LIKE '"+place[0]+"%' AND  WORKFORMID LIKE '"+ req.query.year.toString() + req.query.month.toString()+"%' ";
+            var quer = null;
+            //if(req.query.year　!= null) {
+                quer = "SELECT count(WORKFORMID)  AS cnt FROM visual_heating WHERE STANDARDADDRESS LIKE '" + place[0] + "%' AND  WORKFORMID LIKE '" + req.query.year + req.query.month + "%' ";
+            // }else{
+            //     quer = "SELECT count(WORKFORMID)  AS cnt FROM visual_heating WHERE STANDARDADDRESS LIKE '" + place[0] + "%' AND  WORKFORMID LIKE '" + "____" + req.query.month+ "%' ";
+            // }
              for(var i =1;i < place.length;i++){
-                 quer += ' UNION ALL ' + "SELECT count(WORKFORMID) AS cnt FROM visual_heating WHERE STANDARDADDRESS LIKE '"+ place[i]+"%' AND  WORKFORMID LIKE '"+ req.query.year.toString() + req.query.month.toString()+"%' ";
-             }
+                //if(req.query.year　!= null) {
+                     quer += ' UNION ALL ' + "SELECT count(WORKFORMID) AS cnt FROM visual_heating WHERE STANDARDADDRESS LIKE '"+ place[i]+"%' AND  WORKFORMID LIKE '"+ req.query.year + req.query.month+"%' ";
+                 // }else{
+                 //     quer += ' UNION ALL ' + "SELECT count(WORKFORMID) AS cnt FROM visual_heating WHERE STANDARDADDRESS LIKE '"+ place[i]+"%' AND  WORKFORMID LIKE '"+ "____" + req.query.month.toString()+"%' ";
+                 // }
+            }
+
             console.log(quer);
 
             db.query(quer , function(er, d) {
@@ -45,7 +58,6 @@ router.get('/date', function(req, res, next) {
                 res.json(dt);
             });
         });
-    }
 });
 
 function querystring(problem,whe){
@@ -66,8 +78,6 @@ function querystring(problem,whe){
 
 router.get('/problem',function(req, res, next){
 
-
-
     var flag = 0;
     var where = null;
     if(req.query.year != null && req.query.month != null){
@@ -83,15 +93,12 @@ router.get('/problem',function(req, res, next){
         where = "AND WORKFORMID LIKE '"+ req.query.year.toString()+"%' ";
         flag = 1;
     }else{
-
         if(req.query.month < 10){
             req.query.month = '0' + req.query.month.toString();
         }
         where = "AND WORKFORMID LIKE '"+ '____' + req.query.month.toString()+"%' ";
         flag = 1;
     }
-
-
 
     var qstring = null;
     var allProblems = temperature.concat(leak).concat(cover);
@@ -105,11 +112,11 @@ router.get('/problem',function(req, res, next){
         qstring = querystring(temperature) +' UNION  ALL ' + querystring(leak) + ' UNION  ALL ' + querystring(cover) +' UNION  ALL '+ querystring(allProblems);
         console.log(qstring);
     }
-
         db.query(qstring , function(err, data) {
             if (err) throw err;
             switch(flag){
                 case 0:
+                    data[3].len = 10767 - data[3].len;
                     res.json(data);
                     break;
                 case 1:
@@ -118,7 +125,6 @@ router.get('/problem',function(req, res, next){
 
                         console.log("data: "+ data[3].len);
                         data[3].len = da[0].len - data[3].len;
-
                         if(data[3].len < 0){
                             data[3].len = 0;
                         }
@@ -129,7 +135,6 @@ router.get('/problem',function(req, res, next){
             }
         });
 });
-
 
 
 //为曲线构造sql语句

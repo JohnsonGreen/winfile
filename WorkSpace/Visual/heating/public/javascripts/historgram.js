@@ -67,7 +67,7 @@ function historgram( result ){
         .attr("y", function(d,i){
             return max_height;
         })
-        .attr("dx",rect_step/2 - 10)
+        .attr("dx",rect_step/2 - 15)
         .attr("dy",function(d,i){
             if(i <= 5){
                 return -yScale(d.len)+10;
