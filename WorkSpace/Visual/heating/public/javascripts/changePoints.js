@@ -48,12 +48,12 @@ $('.slider-month').jRange({
 
 function heatPoint(dajson){
     //读取要标注的问题点信息
-    $('svg > g > g:not(.location)').remove();    //移除事先添加的点
-    $('svg > g > path').remove();   //移除所有的块
-    $("svg > g > g").remove();
+    $('svg:has(#tmap) > g > g:not(.location)').remove();    //移除事先添加的点
+    $('svg:not(#lineChart) > g > path').remove();   //移除所有的块
+    $("svg:not(#lineChart) > g > g").remove();
+
     d3.json(dajson,function(error,place)
     {
-
 
         // // 设置颜色比例尺
         // var colorA = d3.hsl(60,1.0,0.5);        // 红色

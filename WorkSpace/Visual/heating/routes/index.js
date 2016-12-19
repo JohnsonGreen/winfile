@@ -4,6 +4,12 @@ var mysql  = require('mysql');
 var db = require('./Db.js');
 
 
+//根据温度低、漏水、井盖丢失提取的关键词
+var  temperature = ['温','不热','凉','冷','冰凉','[:digit:]度'];
+var  leak = ['漏','冒','跑水','爆裂','破裂','断裂','爆管','爆','破','泡'];
+var  cover = ['井','丢','井盖'];
+
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
     res.render('index', {});
@@ -48,7 +54,6 @@ function querystring(problem,whe){
     if(whe != undefined){
         where = whe;
     }
-
     var qstring = " SELECT count(DISTINCT WORKFORMID) AS len  FROM  visual_heating WHERE (EVENTCAUSE LIKE '%"+ problem[0] +"%'";
     for(var i = 1;i < problem.length;i++){
         qstring +=  " OR EVENTCAUSE LIKE '%"+ problem[i] + "%'";
@@ -61,10 +66,7 @@ function querystring(problem,whe){
 
 router.get('/problem',function(req, res, next){
 
-    //根据温度低、漏水、井盖丢失提取的关键词
-    var  temperature = ['温','不热','凉','冷','冰凉','[:digit:]度'];
-    var  leak = ['漏','冒','跑水','爆裂','破裂','断裂','爆管','爆','破','泡'];
-    var  cover = ['井','丢','井盖'];
+
 
     var flag = 0;
     var where = null;
@@ -115,19 +117,70 @@ router.get('/problem',function(req, res, next){
                         if (err) throw err;
 
                         console.log("data: "+ data[3].len);
-
                         data[3].len = da[0].len - data[3].len;
 
                         if(data[3].len < 0){
                             data[3].len = 0;
                         }
-
                         console.log("da: "+ da[0].len);
                         res.json(data);
                     });
                     break;
             }
         });
+});
+
+
+
+//为曲线构造sql语句
+function querystringLine(year,problem){
+
+    var where = '';
+    var month = [];
+    for(var i = 1; i <= 12; i++ ){
+        if(i < 10){
+            month[i] = '0'+i;
+
+        }else{
+            month[i] = i.toString();
+        }
+
+        var whe = null;
+        if(year == null){
+            whe  = "AND WORKFORMID LIKE '"+ "____" + month[i]+"%' ";
+        }else{
+            whe  = "AND WORKFORMID LIKE '"+ year.toString() + month[i]+"%' ";
+        }
+
+        if(i == 12){
+            where += querystring(problem,whe);
+        }else{
+            where +=  querystring(problem, whe) + ' UNION ALL ';
+        }
+
+    }
+
+        //querystring(leak,whe) + querystring(cover,whe);
+
+    return  where;
+}
+
+
+router.get('/line',function(req,res,next){
+
+    //console.log(querystringLine(req.query.year,temperature));
+
+    db.query(querystringLine(req.query.year,temperature),function(err,data){
+        db.query(querystringLine(req.query.year,leak),function(err,data){
+            db.query(querystringLine(req.query.year,cover),function(err,data){
+
+                res.json(data);
+            });
+
+        });
+
+    });
+
 });
 
 

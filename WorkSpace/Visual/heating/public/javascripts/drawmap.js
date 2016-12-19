@@ -53,6 +53,7 @@ var width  = 400;
 var height = 380;
 
 var svg = d3.select("body").append("svg")
+    .attr('id','tmap')
     .attr("width", width)
     .attr("height", height)
     .append("g")
@@ -95,6 +96,7 @@ d3.json("/javascripts/tianjin.json", function(error, root) {
             ).style("left",(d3.event.pageX)+"px")
                 .style("top",(d3.event.pageY+20)+"px")
                 .style("opacity",1.0);
+
         })
         .on("mouseout",function(d,i){
             d3.select(this)

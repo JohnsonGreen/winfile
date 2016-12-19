@@ -51,10 +51,16 @@
       #tooltip tr td:nth-child(2){
         text-align:center;
       }
-      .slide {
+      .slide-map {
         width:300px;
         height:200px;
 
+      }
+
+      .slide-linechart{
+          position:absolute;
+          left:1000px;
+          top: 120px;
       }
       #historgram{
         position:absolute;
@@ -67,21 +73,107 @@
         top: 50px;
       }
 
+      svg, g {
+          pointer-events: all;
+      }
+      .axis path,
+      .axis line {
+          fill: none;
+          stroke: #000;
+          shape-rendering: crispEdges;
+      }
+
+      .title {
+          text-anchor: middle;
+          font-weight: 700;
+      }
+
+      #lineChart{
+          margin-left: 300px;
+          margin-top: 170px;
+      }
+
+      .lineText{
+          position:absolute;
+          left:440px;
+          top: 300px;
+      }
+
+      /*.x.axis path {
+        display: none;
+      }*/
+
+      .linecircle {
+          fill: steelblue;
+      }
+      .linecircle:hover {
+          fill: red;
+      }
+      .flag {
+          stroke: gray;
+          stroke-dasharray: 5;
+          stroke-width: 1.5;
+          display: none;
+          pointer-events: none;
+      }
+      .tips {
+          pointer-events: none;
+          display: none;
+      }
+      .tips-border {
+          fill: #F3E4E4;
+          stroke: gray;
+          stroke-width: 2;
+      }
+      .grid .tick {
+          stroke: lightgrey;
+          opacity: 0.7;
+      }
+      .grid path {
+          stroke-width: 0;
+      }
+
+        #hidyear #hidplace{
+           diplay:none
+         }
+
+
     </style>
   </head>
   <body>
     <div id="tooltip"></div>
-    <div class="slide">
+    <div class="slide-map">
+        <div>
+            <h5>选择</h5><br>
+            <input type="hidden" class="slider-choice" value="0" />
+            <br>
+        </div>
     <div>
-      <div><h2>年份</h2></div><br>
+      <h5>年份</h5><br>
          <input type="hidden" class="slider-year" value="2010" />
       <br>
     </div>
     <div>
-      <div><h2>月份</h2></div><br>
+      <h5>月份</h5><br>
           <input type="hidden" class="slider-month" value="1" />
       <br>
     </div>
+    </div>
+
+    <div class="slide-linechart">
+
+            <h5>选择</h5>
+            <input type="hidden" class="slider-line-choice" value="0" />
+            <br>
+            <span id="hidyear">
+             <h5>年份</h5>
+                <input type="hidden" class="slider-line-year" value="0" />
+                <br>
+            </span>
+           <span id="hidplace">
+             <h5>地点</h5>
+                 <input type="hidden" class="slider-line-place" value="0" />
+           </span>
     </div>
 
      <script src="/javascripts/drawmap.js"></script>
@@ -100,6 +192,288 @@
     <div class="his">
       <h3>不同问题数量直方图：</h3>
     </div>
+
+    <div class="lineText">
+        <h3>不同月份每个问题曲线图：</h3>
+    </div>
+
+
+    <script>
+
+
+        ;(function() {
+            'use strict';
+
+            d3.json("/javascripts/test.json", function(error, root) {
+
+
+//            var data = [[]];
+//            for(var k = 0; k < 4;k++){
+//                data[k] = Array.apply(0, Array(12)).map(function(item, i) {
+//                    i++;
+//                    return {date: '2013-12-' + (i < 10 ? '0' + i : i), pv: parseInt(Math.random() * 900)}
+//                });
+//            }
+
+                var data = root[0].yar[0];
+
+
+            console.log(data);
+
+            //定义每一条线的颜色
+            var color = ['#CCFF33','#FFCC33','#FF9900','#FF99FF','#FF6600'];
+
+            // 定义circle的半径
+            var r0 = 3,
+                r1 = 5;
+
+            // 定义动画持续时间
+            var duration = 500;
+
+            var margin = {top: 20, right: 20, bottom: 30, left: 50},
+                width = 600 - margin.left - margin.right,
+                height = 300 - margin.top - margin.bottom;
+
+
+            var x = d3.scale.linear()
+                .domain([1, 12])
+                .range([0, width]);
+
+            var y = d3.scale.linear()
+            // .domain([0, 100])
+                .range([height, 0]);
+
+            var xAxis = d3.svg.axis()
+                .scale(x)
+                .orient('bottom')
+                .ticks(12);
+
+            var yAxis = d3.svg.axis()
+                .scale(y)
+                .orient('left')
+                .ticks(10);
+
+            var xGridAxis = d3.svg.axis()
+                .scale(x)
+                .orient('bottom');
+
+            var yGridAxis = d3.svg.axis()
+                .scale(y)
+                .orient('left');
+
+            var line = d3.svg.line()
+                .x(function(d) { return x(d.date); })
+                .y(function(d) { return y(d.pv); })
+                .interpolate('monotone');
+
+//            var flagLine = d3.svg.line()
+//                .x(function(d) { return x(d.x); })
+//                .y(function(d) { return y(d.y); });
+
+            var container = d3.select('body')
+                .append('svg')
+                .attr('id','lineChart')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom);
+
+            var  svg = container.append('g')
+                    .attr('class', 'content')
+                    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+                draw(data);
+               slide(root[0]);
+
+
+                function draw(dta){
+                 $('.linecha').remove();
+                    var k = dta.length;
+                    while(k--){
+                        data[k].forEach(function(d) {
+                            d.pv = +d.pv;
+                        });
+                    }
+                    //范围
+                    x.domain([1,12]);
+                    var k = dta.length;
+                    var max = 0;
+                    while(k--){
+                        var temp = d3.max(dta[k], function(d) { return parseInt(d.pv); });
+                        console.log(temp);
+                        if(max < temp){
+                            max = temp;
+                        }
+                    }
+
+                    y.domain([0, max]);
+
+                    svg.append('text')
+                        .attr('class', 'title')
+                        .text('不同问题按月统计图')
+                        .attr('x', width / 2)
+                        .attr('y', -7);
+
+                    svg.append('g')
+                        .attr('class', 'x axis linecha')
+                        .attr('transform', 'translate(0,' + height + ')')
+                        .call(xAxis)
+                        .append('text')
+                        .text('月份')
+                        .attr('transform', 'translate(' + (width - 8 ) + ', -5)');
+
+                    svg.append('g')
+                        .attr('class', 'y axis linecha')
+                        .call(yAxis)
+                        .append('text')
+                        .text('次数');
+
+                    svg.append('g')
+                        .attr('class', 'grid linecha')
+                        .attr('transform', 'translate(0,' + height + ')')
+                        .call(xGridAxis.tickSize(-height, 0, 0).tickFormat(''));
+
+                    svg.append('g')
+                        .attr('class', 'grid linecha')
+                        .call(yGridAxis.tickSize(-width, 0, 0).tickFormat(''));
+
+
+                    for(var k = 0;k < dta.length;k++){
+                        var path = svg.append('path')
+                            .attr('class', 'line linecha')
+                            .attr('fill','none')
+                            .attr('stroke',color[k])
+                            .attr('stroke-width','1.5px')
+                            .attr('d', line(dta[k]));
+                    }
+
+                    var da = [];
+                    for(var k = 0; k < dta.length;k++){
+                        da = da.concat(dta[k]);
+                    }
+
+                    var  pro = ['不热','漏水','井盖','其他'];
+                    svg.selectAll('circle')
+                        .data(da)
+                        .enter()
+                        .append('g')
+                        .append('circle')
+                        .attr('class', 'linecircle linecha')
+                        .attr('cx', line.x())
+                        .attr('cy', line.y())
+                        .attr('r', r0)
+                        .on('mouseover', function(d,i) {
+                            d3.select(this).transition().duration(duration).attr('r', r1);
+                            var temp = parseInt(i / 12);
+                            d3.select("#tooltip").html(
+                                "<h4>"+pro[temp]+"</h4><table>"+
+                                "<tr><td>月份</td><td>"+ d.date+"</td></tr>"+
+                                "<tr><td>数量</td><td>"+ d.pv +"</td></tr>"+
+                                "</table>"
+                            ).style("left",(d3.event.pageX)+"px")
+                                .style("top",(d3.event.pageY+20)+"px")
+                                .style("opacity",1.0);
+                        })
+                        .on('mouseout', function() {
+                            d3.select(this).transition().duration(duration).attr('r', r0);
+                            d3.select("#tooltip").style("opacity", 0.0);
+                        });
+                }
+
+                function slide(dta){
+
+                    $('#hidplace').hide();
+                    $('.slider-line-choice').jRange({
+                        from: 0,
+                        to: 2,
+                        step: 1,
+                        scale: ['年份','地点','综合'],
+                        format: '%s',
+                        width: 200,
+                        showLabels: false,
+                        snap: true,
+                        onstatechange:function(){
+
+                            console.log($('.slider-line-choice').val());
+                            var flag = $('.slider-line-choice').val();
+                            if(flag == '0'){
+                                $('#hidplace').hide(600);
+                                $('#hidyear').show(600);
+
+                            }else if(flag == '1'){
+
+                                $('#hidyear').hide(600);
+                                $('#hidplace').show(600);
+                            }else{
+                                $('#hidyear').show(600);
+                                $('#hidplace').show(600);
+                            }
+                        }
+                    });
+
+                    $('.slider-line-year').jRange({
+                        from: 0,
+                        to: 3,
+                        step: 1,
+                        scale: ['2010','2011','2012','总体'],
+                        format: '%s',
+                        width: 200,
+                        showLabels: false,
+                        snap: true,
+                        onstatechange:function(){
+
+                            console.log($('.slider-line-year').val());
+                            var yr = $('.slider-line-year').val();
+                            var choice = $('.slider-line-choice').val();
+                            if(yr == '3'){
+                                $('#hidplace').hide(600);
+                                draw(dta.yar[parseInt(yr)]);
+                            }else{
+                                if(choice == '2'){
+                                    $('#hidplace').show(600);
+                                }
+                                if(choice == '0'){
+                                    draw(dta.yar[parseInt(yr)]);
+
+                                }else if(choice == '2'){
+
+                                    var pl = $('.slider-line-place').val();
+                                    yr = (parseInt(yr) + 2010).toString() ;
+                                    console.log(dta.placeYear[0][yr][parseInt(pl)]);
+                                    draw(dta.placeYear[0][yr][parseInt(pl)]);
+                                }
+                            }
+                        }
+                    });
+
+                    $('.slider-line-place').jRange({
+                        from: 0,
+                        to: 5,
+                        step: 1,
+                        scale: ['河西区','河东区','南开区','河北区','红桥区','和平区'],
+                        format: '%s',
+                        width: 200,
+                        showLabels: false,
+                        snap: true,
+                        onstatechange:function(){
+
+                            var pl = $('.slider-line-place').val();
+                            var choice = $('.slider-line-choice').val();
+                            if(choice == '1'){
+                                console.log(dta.place);
+                                draw(dta.place[parseInt(pl)]);
+                            }else if(choice == '2'){
+                                var yr = $('.slider-line-year').val();
+                                yr = (parseInt(yr) + 2010).toString() ;
+                                console.log('yr' + yr);
+                                console.log('choice ' + choice);
+                                console.log(dta.placeYear[0]);
+                                draw(dta.placeYear[0][yr][parseInt(pl)]);
+
+                            }
+                        }
+                    });
+                }
+            });
+        })();
+    </script>
 
 
   </body>
