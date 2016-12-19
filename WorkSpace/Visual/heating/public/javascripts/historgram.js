@@ -6,10 +6,10 @@
 function historgram( result ){
 
     $("svg > g > rect").remove();
-    $("svg > g > text").remove();
+    $("svg > g > text:not(.title)").remove();
+
     var data = [{len:0}].concat(result).concat([{len:0}]);
     // $(".jingwei").html(result[0]['LAT']);
-
 
     console.log(data);
    // console.log(data);

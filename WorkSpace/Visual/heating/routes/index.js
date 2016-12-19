@@ -23,29 +23,19 @@ router.get('/date', function(req, res, next) {
         req.query.year = (req.query.year == null?  "____" : req.query.year.toString());
         req.query.month = (req.query.month == null?  '' :   req.query.month < 10 ?  '0' + req.query.month.toString(): req.query.month);
         console.log(req.query.month);
-        //if(req.query.year　!= null){
-             qstring = "SELECT  LNG,LAT  FROM  visual_heating WHERE WORKFORMID LIKE '"+ req.query.year + req.query.month+"%' ";
-        // }else{
-        //      qstring = "SELECT  LNG,LAT  FROM  visual_heating WHERE WORKFORMID LIKE '"+ "____" + req.query.month.toString()+"%' ";
-        // }
 
+        qstring = "SELECT  LNG,LAT  FROM  visual_heating WHERE WORKFORMID LIKE '"+ req.query.year + req.query.month+"%' ";
 
         console.log(qstring);
         db.query(qstring , function(err, data) {
             if (err) throw err;
             var place = ['河西区','河东区','南开区','河北区','红桥区','和平区'];
             var quer = null;
-            //if(req.query.year　!= null) {
                 quer = "SELECT count(WORKFORMID)  AS cnt FROM visual_heating WHERE STANDARDADDRESS LIKE '" + place[0] + "%' AND  WORKFORMID LIKE '" + req.query.year + req.query.month + "%' ";
-            // }else{
-            //     quer = "SELECT count(WORKFORMID)  AS cnt FROM visual_heating WHERE STANDARDADDRESS LIKE '" + place[0] + "%' AND  WORKFORMID LIKE '" + "____" + req.query.month+ "%' ";
-            // }
+
              for(var i =1;i < place.length;i++){
-                //if(req.query.year　!= null) {
-                     quer += ' UNION ALL ' + "SELECT count(WORKFORMID) AS cnt FROM visual_heating WHERE STANDARDADDRESS LIKE '"+ place[i]+"%' AND  WORKFORMID LIKE '"+ req.query.year + req.query.month+"%' ";
-                 // }else{
-                 //     quer += ' UNION ALL ' + "SELECT count(WORKFORMID) AS cnt FROM visual_heating WHERE STANDARDADDRESS LIKE '"+ place[i]+"%' AND  WORKFORMID LIKE '"+ "____" + req.query.month.toString()+"%' ";
-                 // }
+
+                 quer += ' UNION ALL ' + "SELECT count(WORKFORMID) AS cnt FROM visual_heating WHERE STANDARDADDRESS LIKE '"+ place[i]+"%' AND  WORKFORMID LIKE '"+ req.query.year + req.query.month+"%' ";
             }
 
             console.log(quer);
@@ -78,6 +68,7 @@ function querystring(problem,whe){
 
 router.get('/problem',function(req, res, next){
 
+    var place = ['河西区','河东区','南开区','河北区','红桥区','和平区'];
     var flag = 0;
     var where = null;
     if(req.query.year != null && req.query.month != null){

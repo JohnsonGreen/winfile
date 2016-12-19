@@ -53,7 +53,7 @@
       }
       .slide-map {
         width:300px;
-        height:200px;
+        height:150px;
 
       }
 
@@ -132,6 +132,11 @@
       .grid path {
           stroke-width: 0;
       }
+      .tuli {
+          position:absolute;
+          left:500px;
+          top: 400px;
+      }
 
        #hid-year #hid-month #hidyear #hidplace{
            diplay:none
@@ -142,6 +147,7 @@
   </head>
   <body>
     <div id="tooltip"></div>
+
     <div class="slide-map">
 
             <h5>选择</h5><br>
@@ -200,9 +206,8 @@
         <h3>不同月份每个问题曲线图：</h3>
     </div>
 
-
+    <!-- 曲线图 -->
     <script>
-
 
         ;(function() {
             'use strict';
@@ -254,6 +259,11 @@
                 .x(function(d) { return x(d.date); })
                 .y(function(d) { return y(d.pv); })
                 .interpolate('monotone');
+                 //图例
+                var line1 = d3.svg.line()
+                    .x(function(d) { return x(d.date); })
+                    .y(function(d) { return y(d.pv); })
+                    .interpolate('monotone');
 
             var container = d3.select('body')
                 .append('svg')
@@ -266,6 +276,34 @@
                     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
                 draw(data);
                slide(root[0]);
+
+
+
+                //画图例
+                var svgContainer = d3.select("body").append("svg")
+                    .attr('class','tuli')
+                    .attr("width",200)
+                    .attr("height",200);
+
+                var pro = ['不热','漏水','井盖','其它'];
+
+                for(var k = 0;k < 4;k++){
+                    //画直线
+                     svgContainer.append("line")
+                        .attr("x1",100)
+                        .attr("y1",20 + k * 40)
+                        .attr("x2",200)
+                        .attr("y2",20 + k * 40)
+                        .attr("stroke",color[k])
+                        .attr("stroke-width",8)
+
+                    svgContainer.append('text')
+                        .attr('class', 'title')
+                        .text(pro[k])
+                        .attr('x', 40)
+                        .attr('y', 24 + k * 40 );
+
+                }
 
                 function draw(dta){
                  $('.linecha').remove();
@@ -323,6 +361,7 @@
                             .attr('stroke-width','1.5px')
                             .attr('d', line(dta[k]));
                     }
+
 
                     var da = [];
                     for(var k = 0; k < dta.length;k++){

@@ -155,7 +155,6 @@ function heatPoint(dajson){
 
                     console.log("i: " + i);
                     var m = compute(place[1][i].cnt);
-
                     console.log(place[1][i].cnt);
                     return computeColor(m);
                 })
@@ -165,8 +164,7 @@ function heatPoint(dajson){
                         .attr("fill", "steelblue");
 
                     d3.select("#tooltip").html(
-                        "<h4>" + "adsjfjds" + "</h4><table>" +
-                        "<tr><td>区县</td><td>" + d.properties.name + "</td></tr>" +
+                        "<h4>" + d.properties.name + "</h4><table>" +
                         "<tr><td>问题总数</td><td>" + place[1][i].cnt + "</td></tr>" +
                         "</table>"
                     ).style("left", (d3.event.pageX) + "px")
@@ -242,6 +240,38 @@ function heatPoint(dajson){
                 .attr("font-size","14px")
                 .attr("font-weight","bold");
 
+
+           var gridSize = Math.floor(width / 6);
+           var legendElementWidth = gridSize;
+
+           //色条
+            var te = [];
+            for(var j = 0; j  < 6;j++){
+                te[j] = (j + 1)*(max-min);
+            }
+            var legend = svg.selectAll(".legend")
+                .data(te, function(d,i) {
+                    return d;
+                })    // 由data获得的元素个数为7
+                .enter().append("g")
+                .attr("class", "legend");
+
+            legend.append("rect")
+                .attr("x", function(d, i) { return legendElementWidth * i; })
+                .attr("y",370)
+                .attr("width", legendElementWidth)
+                .attr("height", gridSize / 2)
+                .style("fill", function(d, i) {
+                    var m = compute(i*(max - min)/6);
+                    console.log("m " + m);
+                    return computeColor(m);
+                });
+
+            legend.append("text")
+                .attr("class", "mono")
+                .text(function(d,i) { return ">= "+Math.round(i*(max-min)/6); })
+                .attr("x", function(d, i) { return legendElementWidth * i; })
+                .attr("y", 380);
 
         });
 

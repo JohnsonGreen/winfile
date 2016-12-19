@@ -61,7 +61,7 @@ var svg = d3.select("body").append("svg")
 
 var projection = d3.geo.mercator()
     .center([117.2008, 39.1189])
-    .scale(110000)
+    .scale(100000)
     .translate([width/2, height/2]);
 
 var path = d3.geo.path()
@@ -135,4 +135,6 @@ d3.json("/javascripts/tianjin.json", function(error, root) {
         .attr("font-family","sans-setif")
         .attr("font-size","14px")
         .attr("font-weight","bold");
+
+
 });
