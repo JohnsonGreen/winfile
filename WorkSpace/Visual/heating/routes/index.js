@@ -6,7 +6,7 @@ var db = require('./Db.js');
 
 //根据温度低、漏水、井盖丢失提取的关键词
 var  temperature = ['温','不热','凉','冷','冰凉','[:digit:]度'];
-var  leak = ['漏','冒','跑水','爆裂','破裂','断裂','爆管','爆','破','泡'];
+var  leak = ['漏','冒','跑水','断裂','爆','破','泡'];
 var  cover = ['井','丢','井盖'];
 
 
@@ -15,30 +15,57 @@ router.get('/', function(req, res, next) {
     res.render('index', {});
 });
 
+function group(pro){
+      if(pro != null){
+          var str ="  AND (EVENTCAUSE LIKE '%"+ pro[0] +"%'";
+          for(var i = 1;i < pro.length;i++){
+              str +=  " OR EVENTCAUSE LIKE '%"+ pro[i] + "%'";
+              if(i == pro.length - 1){
+                  str += ')  ';
+              }
+          }
+          return str;
+      }else{
+
+          return '';
+      }
+
+}
 
 router.get('/date', function(req, res, next) {
-
 
         var qstring = null;
         req.query.year = (req.query.year == null?  "____" : req.query.year.toString());
         req.query.month = (req.query.month == null?  '' :   req.query.month < 10 ?  '0' + req.query.month.toString(): req.query.month);
-        console.log(req.query.month);
 
-        qstring = "SELECT  LNG,LAT  FROM  visual_heating WHERE WORKFORMID LIKE '"+ req.query.year + req.query.month+"%' ";
+        var prob = null;
+        if(req.query.problem != undefined){
 
-        console.log(qstring);
+            if(req.query.problem == '0'){
+                prob = temperature;
+            }else if(req.query.problem == '1'){
+                prob = leak;
+            }else{
+                prob = cover;
+            }
+        }
+
+       // console.log(req.query.month);
+
+       var anStr = group(prob);
+
+        qstring = "SELECT  LNG,LAT  FROM  visual_heating WHERE WORKFORMID LIKE '"+ req.query.year + req.query.month+"%' " +anStr;
         db.query(qstring , function(err, data) {
             if (err) throw err;
             var place = ['河西区','河东区','南开区','河北区','红桥区','和平区'];
             var quer = null;
-                quer = "SELECT count(WORKFORMID)  AS cnt FROM visual_heating WHERE STANDARDADDRESS LIKE '" + place[0] + "%' AND  WORKFORMID LIKE '" + req.query.year + req.query.month + "%' ";
+                quer = "SELECT count(WORKFORMID)  AS cnt FROM visual_heating WHERE STANDARDADDRESS LIKE '" +
+                    place[0] + "%' AND  WORKFORMID LIKE '" + req.query.year + req.query.month + "%' "+ anStr;
 
              for(var i =1;i < place.length;i++){
-
-                 quer += ' UNION ALL ' + "SELECT count(WORKFORMID) AS cnt FROM visual_heating WHERE STANDARDADDRESS LIKE '"+ place[i]+"%' AND  WORKFORMID LIKE '"+ req.query.year + req.query.month+"%' ";
+                 quer += ' UNION ALL ' + "SELECT count(WORKFORMID) AS cnt FROM visual_heating WHERE STANDARDADDRESS LIKE '"+
+                     place[i]+"%' AND  WORKFORMID LIKE '"+ req.query.year + req.query.month+"%' "+anStr;
             }
-
-            console.log(quer);
 
             db.query(quer , function(er, d) {
                 if (er) throw er;
@@ -65,6 +92,7 @@ function querystring(problem,whe){
     }
     return  qstring;
 }
+
 
 router.get('/problem',function(req, res, next){
 
@@ -97,11 +125,11 @@ router.get('/problem',function(req, res, next){
     if(flag == 1){
 
         qstring = querystring(temperature,where) +' UNION ALL' + querystring(leak,where ) + ' UNION  ALL ' + querystring(cover,where ) +' UNION  ALL '+ querystring(allProblems,where );
-        console.log(qstring);
+
 
     }else if(flag == 0){  //均为0
         qstring = querystring(temperature) +' UNION  ALL ' + querystring(leak) + ' UNION  ALL ' + querystring(cover) +' UNION  ALL '+ querystring(allProblems);
-        console.log(qstring);
+
     }
         db.query(qstring , function(err, data) {
             if (err) throw err;
@@ -114,12 +142,11 @@ router.get('/problem',function(req, res, next){
                     db.query("SELECT count(DISTINCT WORKFORMID) AS len FROM  visual_heating WHERE"+ where.slice(3) , function(err, da) {
                         if (err) throw err;
 
-                        console.log("data: "+ data[3].len);
+
                         data[3].len = da[0].len - data[3].len;
                         if(data[3].len < 0){
                             data[3].len = 0;
                         }
-                        console.log("da: "+ da[0].len);
                         res.json(data);
                     });
                     break;
@@ -178,6 +205,5 @@ router.get('/line',function(req,res,next){
     });
 
 });
-
 
 module.exports = router;

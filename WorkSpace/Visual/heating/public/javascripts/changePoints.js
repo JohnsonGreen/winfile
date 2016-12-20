@@ -2,33 +2,43 @@
  * Created by cyh on 2016/12/16.
  */
 //ajax异步加载
-function put(year,month){
+function put(year,month,problem){
 
+   if(problem == null){
+       if(year != null && month != null){
+           $.get("/problem?year="+parseInt(year)+"&&month="+parseInt(month), function(result){
+               historgram(result);
+           });
+           heatPoint("/date?year="+parseInt(year)+"&&month="+parseInt(month));
+       }else if(year == null && month != null){
 
-    if(year != null && month != null){
-        $.get("/problem?year="+parseInt(year)+"&&month="+parseInt(month), function(result){
-            historgram(result);
-        });
-        heatPoint("/date?year="+parseInt(year)+"&&month="+parseInt(month));
-    }else if(year == null && month != null){
+           $.get("/problem?month="+parseInt(month), function(result){
+               historgram(result);
+           });
 
-        $.get("/problem?month="+parseInt(month), function(result){
-            historgram(result);
-        });
-
-        heatPoint("/date?month="+parseInt(month));
-    }else if(year != null && month == null){
-        $.get("/problem?year="+parseInt(year), function(result){
-            historgram(result);
-        });
-        heatPoint("/date?year="+parseInt(year));
-    }else{
-        $.get("/problem", function(result){
-            historgram(result);
-        });
-        heatPoint("/date");
-    }
-
+           heatPoint("/date?month="+parseInt(month));
+       }else if(year != null && month == null){
+           $.get("/problem?year="+parseInt(year), function(result){
+               historgram(result);
+           });
+           heatPoint("/date?year="+parseInt(year));
+       }else{
+           $.get("/problem", function(result){
+               historgram(result);
+           });
+           heatPoint("/date");
+       }
+   }else{
+       if(year != null && month != null){
+           heatPoint("/date?year="+parseInt(year)+"&&month="+parseInt(month)+"&&problem="+problem);
+       }else if(year == null && month != null){
+           heatPoint("/date?month="+parseInt(month)+"&&problem="+problem);
+       }else if(year != null && month == null){
+           heatPoint("/date?year="+parseInt(year)+"&&problem="+problem);
+       }else{
+           heatPoint("/date?"+"problem="+problem);
+       }
+   }
 }
 
 $('#hid-month').hide(600);
@@ -47,16 +57,20 @@ $('.slider-choice').jRange({
         if(choice == '0'){
             $('#hid-year').show(600);
             $('#hid-month').hide(600);
+            $('#hid-problem').show(600);
         }else if(choice == '1'){
             $('#hid-month').show(600);
             $('#hid-year').hide(600);
+            $('#hid-problem').show(600);
         }else if(choice == '2'){
             $('#hid-month').show(600);
             $('#hid-year').show(600);
+            $('#hid-problem').show(600);
         }else{
             $('#hid-month').hide(600);
             $('#hid-year').hide(600);
-            put(null,null);
+            $('#hid-problem').hide(600);
+            put(null,null,null);
         }
 
         console.log($('.slider-month').val());
@@ -64,21 +78,32 @@ $('.slider-choice').jRange({
     }
 });
 
+
 $('.slider-year').jRange({
     from: 2010,
     to: 2012,
     step: 1,
-    scale: [2010,2011,2012],
+    scale: ['2010年','2011年','2012年'],
     format: '%s',
     width: 300,
-    showLabels: true,
+    showLabels: false,
     snap: true,
     onstatechange:function(){
         var choice = $('.slider-choice').val();
+        var pro = $('.slider-problem').val();
+
         if(choice == '0'){
-            put($('.slider-year').val(),null);
+            if(pro == '0')
+              put($('.slider-year').val(),null,null);
+            else{
+                put($('.slider-year').val(),null,parseInt(pro) -1);
+            }
         }else if(choice == '2'){
-            put($('.slider-year').val(),$('.slider-month').val());
+            if(pro == '0')
+            put($('.slider-year').val(),$('.slider-month').val(),null);
+            else{
+                put($('.slider-year').val(),$('.slider-month').val(),parseInt(pro) -1);
+            }
         }
         console.log($('.slider-month').val());
         console.log($('.slider-year').val());
@@ -89,19 +114,75 @@ $('.slider-month').jRange({
     from: 1,
     to: 12,
     step: 1,
-    scale: [1,2,3,4,5,6,7,8,9,10,11,12],
+    scale: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
     format: '%s',
     width: 300,
-    showLabels: true,
+    showLabels: false,
     snap: true,
     onstatechange:function(){
 
         var choice = $('.slider-choice').val();
+        var pro = $('.slider-problem').val();
         if(choice == '1'){
-            put(null,$('.slider-month').val());
+            if(pro == '0'){
+                put(null,$('.slider-month').val(),null);
+                console.log("hehe0");
+            }
+            else{
+                put(null,$('.slider-month').val(),parseInt(pro) -1);
+                console.log("hehe1");
+            }
+
         }else if(choice == '2'){
-            put($('.slider-year').val(),$('.slider-month').val());
+            if(pro == '0'){
+                put($('.slider-year').val(),$('.slider-month').val(),null);
+                console.log("hehe3");
+            }
+            else{
+                put($('.slider-year').val(),$('.slider-month').val(), parseInt(pro) -1);
+                console.log("hehe4");
+            }
+
         }
+
+    }
+});
+
+$('.slider-problem').jRange({
+    from: 0,
+    to: 4,
+    step: 1,
+    scale: ['总体','不热','漏水','井盖','其它'],
+    format: '%s',
+    width: 300,
+    showLabels: false,
+    snap: true,
+    onstatechange:function(){
+
+        var choice = $('.slider-choice').val();
+        var pro = $('.slider-problem').val();
+
+        if(choice == '1'){
+            if(pro == '0')
+            put(null,$('.slider-month').val(),null);
+            else{
+                put(null,$('.slider-month').val(), parseInt(pro) -1);
+            }
+
+        }else if(choice == '2'){
+            if(pro == '0')
+               put($('.slider-year').val(),$('.slider-month').val(),null);
+            else{
+                put($('.slider-year').val(),$('.slider-month').val(),parseInt(pro) -1);
+            }
+        }else if(choice == '0'){
+            if(pro == '0')
+                put($('.slider-year').val(),null,null);
+            else{
+                put($('.slider-year').val(),null,parseInt(pro) -1);
+            }
+        }
+
         console.log($('.slider-month').val());
         console.log($('.slider-year').val());
     }

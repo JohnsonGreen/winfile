@@ -47,8 +47,6 @@ graphics.selectAll(".linetick")
     .attr("y2",max_height + 5);
 
 
-
-
 var width  = 400;
 var height = 380;
 
