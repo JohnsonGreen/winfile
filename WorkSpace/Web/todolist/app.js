@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 var users = require('./routes/users');
 var sessions = require('./routes/sessions');
-
+var todos = require('./routes/todos');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -29,7 +29,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/users', users);
 app.use('/api/sessions',sessions);
-
+app.use('/api/todos',todos);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
