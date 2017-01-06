@@ -29,9 +29,26 @@ router.post('/', function(req, res, next) {
 
 router.get('/',function(req,res,next){
 
-    var err;
     if(req.query.username!=null){
         User.findByUsername(req.query.username,function (err,data) {
+            if (err) {
+                console.log('User.find error!');
+            }
+            console.log(data);
+            res.json(data);
+        })
+    }else{
+        res.json({
+            error: "You  need  give a username!"
+        });
+    }
+
+});
+
+router.get('/:id',function(req,res,next){
+
+    if(req.params.id != null){
+        User.get(req.params.id,function (err,data) {
             if (err) {
                 console.log('User.find error!');
             }

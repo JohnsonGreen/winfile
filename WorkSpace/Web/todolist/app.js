@@ -5,11 +5,17 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var app = express();
+// var session = require('express-session');
 
+var app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(session({
+//     secret: 'keyboard cat',
+//     resave: false,
+//     saveUninitialized: true
+// }));
 
 var users = require('./routes/users');
 var sessions = require('./routes/sessions');
@@ -23,7 +29,7 @@ app.set('view engine', 'jade');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 
-app.use(cookieParser());
+app.use(cookieParser('sessiontest'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 

@@ -30,6 +30,13 @@ Todo.findByUserId = function (userid, callback) {
     })
 }
 
+Todo.findByUserIdDone = function (user_id, callback) {
+    var sql = 'select * from 3014218084_todo where user_id = \'' + user_id + '\''  + " && finished = 1";
+    db.query(sql,function (err,data) {
+        callback(err,data);
+    })
+}
+
 Todo.findByUserIdTime = function(user,callback){
     var timeStart = user.endTime - (3600*24 -2);
     var sql ='select * from 3014218084_todo where user_id = \'' + user.user_id + '\'' +' && start_time >=  \'' + timeStart + '\'' + ' &&  start_time <=\' '+ user.endTime + '\''+' && finished <> 1  order by set_time';

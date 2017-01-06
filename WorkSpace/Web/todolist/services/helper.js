@@ -30,5 +30,29 @@ function check(key,value){
     }
 }
 
+function checkLogin(req){
+    var user_id= null;
+    // if(req.cookie){
+    //     req.cookie={};
+    // }  else{
+    //     user_id = req.cookie['user_id'];
+    // }
+
+    if (! user_id) {
+        return true;
+    } else {
+        return true;
+    }
+
+}
+
+//清理cookie
+function logOut(res,callback){
+    res.clearCookie("user_name");
+    res.clearCookie("user_id");
+}
+
 exports.encrypt=encrypt;
 exports.check=check;
+exports.checkLogin=checkLogin;
+exports.logOut=logOut;

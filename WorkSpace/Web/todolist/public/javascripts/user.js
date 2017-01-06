@@ -4,6 +4,7 @@
 $(function(){
     //验证输入条目是否均可行
     var inputReg,inputLog;
+
     function inputRegInit(){
         inputReg={
             username:false,
@@ -151,12 +152,24 @@ $(function(){
                     $(".login-close").trigger('click');     //关闭表单
                     $('.remind').hide();   //隐藏所有提示
                     inputLogInit();      //重新初始化所有检查变量
+                    //setCookie('user_name',data.username,1); //设置cookie
+                    setCookie('user_id_3014218084',data.id,1); //设置cookie
+                    user_name = data.username;
+                    user_id = data.id;
 
                     $('.alert>span').html('<strong>Login SUCCESS !  Congratulations!</strong> You can enjoy our service NOW !').show();
                     $('.alert').removeClass('alert-warning').addClass('alert-success').slideDown(600);
                     setTimeout(function(){
                         $('.alert').slideUp(600);
                     },3000);
+
+                    $('#home').slideUp(600);
+                    setTimeout(function(){
+                        $('#list-table').slideDown(600);
+                    },1000);
+
+                    $('#welcome').html('Welcome <strong>'+ data.username+'</strong>');
+                    $('nav').slideDown(600);
 
                 }else{
                     $('#login-form  .error>span').removeClass('success-letter').addClass('error-letter').html(data.error).show();
@@ -170,6 +183,10 @@ $(function(){
         return false;
     });
 
+    $('#home').slideDown(600);
+
+    checkCookie();
+
     /**************************用户登录结束**********************************/
 
 
@@ -182,6 +199,7 @@ $(function(){
         var reguser = $(this);
 
         if(res.error){
+
             inputReg.username = false;
             reguser.siblings().removeClass('success-letter').addClass('error-letter').html(res.error).show();
 
@@ -234,6 +252,7 @@ $(function(){
             inputReg.passConfirm = false;
             $(this).siblings().removeClass('success-letter').addClass('error-letter').html("The passwords you typed do not match").show();
         }
+
     });
 
     //用户注册按钮
@@ -253,10 +272,16 @@ $(function(){
                     $('.remind').hide();   //隐藏所有提示
                     inputRegInit();      //重新初始化所有检查变量
 
-                    $('.alert>span').html('<strong>RGISTER SUCCESS !  Congratulations!</strong> You can enjoy our service NOW !').show();
+                    $('.alert>span').html('<strong>RGISTER SUCCESS !  Congratulations!</strong> You can login and enjoy our service NOW !').show();
                     $('.alert').removeClass('alert-warning').addClass('alert-success').slideDown(600);
                     setTimeout(function(){
                         $('.alert').slideUp(600);
+
+                        $('input[name="loguser"]').val(reguser);
+                        $('input[name="loguser"]').trigger('keyup');
+                        $('#start-btn').trigger('click');
+                        $('input[name="logpas"]').focus();
+
                     },3000);
 
                 }else{
@@ -271,7 +296,109 @@ $(function(){
         return false;
     });
 
+    $('#logout').click(function(){
+        delCookie('user_id_3014218084');
+
+        $('.alert>span').html('<strong>LogOut SUCCESS!</strong> good bye').show();
+        $('.alert').removeClass('alert-warning').addClass('alert-success').slideDown(600);
+        setTimeout(function(){
+            $('.alert').slideUp(600);
+        },3000);
+
+        $('nav').slideUp(600);
+        setTimeout(function(){
+            $('#list-table').slideUp(600);
+        },1000);
+
+        console.log('user_name:  '+ user_name);
+        $('#home').slideDown(600);
+        user_name='';
+        user_id='';
+
+
+
+    });
+
     /**************************用户注册结束********************************/
+
+    /**************************本地cookie操作开始*********************************/
+
+    function getUser(){
+
+    }
+
+    var c_start='';
+    var c_end =''
+    function setCookie(c_name,value,expiredays)
+    {
+        var exdate=new Date()
+        exdate.setDate(exdate.getDate()+expiredays)
+        document.cookie=c_name+ "=" +escape(value)+
+            ((expiredays==null) ? "" : ";expires="+exdate.toGMTString())
+    }
+
+    function getCookie(c_name)
+    {
+        if (document.cookie.length>0)
+        {
+            c_start=document.cookie.indexOf(c_name + "=")
+            if (c_start!=-1)
+            {
+                c_start=c_start + c_name.length+1
+                c_end=document.cookie.indexOf(";",c_start)
+                if (c_end==-1) c_end=document.cookie.length
+                return unescape(document.cookie.substring(c_start,c_end))
+            }
+        }
+        return ""
+    }
+
+    function checkCookie()
+    {
+        //user_name=getCookie('user_id');
+        user_id=getCookie('user_id_3014218084');
+        if (user_id !=null && user_id !="")
+        {
+
+            $.get('/api/users/'+ user_id,function(data){
+                user_name= data[0].username;
+                setCookie('user_id_3014218084',user_id,1); //设置cookie
+
+                $('.alert>span').html('<strong>Welcome Back!</strong> You can enjoy our service NOW !').show();
+                $('.alert').removeClass('alert-warning').addClass('alert-success').slideDown(600);
+                setTimeout(function(){
+                    $('.alert').slideUp(600);
+                },3000);
+
+                $('#home').slideUp(600);
+                setTimeout(function(){
+                    $('#list-table').slideDown(600);
+                },1000);
+
+                $('#welcome').html('Welcome <strong>'+user_name+'</strong>');
+                console.log('user_name:  '+ user_name);
+
+                $('nav').slideDown(600);
+            });
+
+        }
+        else
+        {
+
+        }
+    }
+
+    function delCookie(name)
+    {
+        var exp = new Date();
+        exp.setTime(exp.getTime() - 1);
+        var cval=getCookie(name);
+        if(cval!=null)
+            document.cookie= name + "="+cval+";expires="+exp.toGMTString();
+    }
+
+
+    /****************************本地cookie操作结束*******************************/
 
 
 });

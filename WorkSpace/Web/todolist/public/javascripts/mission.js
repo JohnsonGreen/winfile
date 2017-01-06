@@ -89,7 +89,7 @@ $(function(){
 
 
     /*************************今日明日及所有的条目开始************************************/
-      var user_id = 30;
+       console.log(user_id);
       var today_time = Math.floor(endOfToday());
       var tomorrow_time = Math.floor(today_time + 3600*24);
 
@@ -136,9 +136,6 @@ $(function(){
         }
     });
 
-
-
-
     $('#all').click(function(){
         if($(this).parent().hasClass('active')){
         }else{
@@ -156,6 +153,55 @@ $(function(){
             });
         }
     });
+
+
+    $('#finished').click(function(){
+        if($(this).parent().hasClass('active')){
+        }else{
+            clearAllInterval();
+            $('tbody tr:first').nextAll().remove();
+
+            console.log($('tbody:first')[0]);
+
+            $.get('/api/todos/'+ user_id+'/finished/1', function(data){
+
+
+                $('#delete-things').show();
+                $('#done-things').hide();
+                $('#nothing-remind').remove();
+                var todos = data;
+                if(todos.length == 0){
+                    appendHtml(todos);
+                }else{
+                    for(var todo in todos){
+                        var start_time = stampToDate(parseInt(todos[todo].start_time));
+                        var estimated_time = secondsToHour(parseInt(todos[todo].estimated_time));
+
+                        $('.table').append('<tr name='+todos[todo].id+'>'+
+                            '<td>'+
+                            '<div id="'+ todos[todo].set_time + '"  itemid="'+todos[todo].id+'" class="checkbox" style="margin-top:0px; margin-bottom:0px">' +
+                            '<label >'+
+                            '<input itemid="'+todos[todo].id+'" type="checkbox" >'+
+                            '</label>'+
+                            '</div>'+
+                            '</td>'+
+                            '<td>'+ todos[todo].content +'</td><td>' + start_time + '</td><td>'+ estimated_time+ '</td><td><span id="item'+ todos[todo].id + '" >'+ 'none' + '</span></td>'+
+                            '</tr>');
+
+                    }
+                }
+
+
+            });
+            var parent = $(this).parent();
+            parent.addClass('active').siblings().each(function(){
+                $(this).removeClass('active');
+            });
+        }
+    });
+
+
+
 
     /*************************今日明日及所有的条目结束************************************/
 
@@ -242,7 +288,7 @@ $(function(){
                    start_time: timestamp,
                    estimated_time : interval,
                    content : content,
-                   user_id: 30
+                   user_id: user_id
                },function(data){
                    if(!data.error){
                       console.log("返回值：  " + data);
@@ -274,7 +320,7 @@ $(function(){
 
       function checkAllBox(){
           var itemArray = [];
-        $('.table  input:not(:first)').each(function(){
+        $('.table  input').each(function(){
 
               if($(this).is(':checked')){
                   itemArray.push($(this).attr('itemid'));
@@ -287,7 +333,7 @@ $(function(){
 
     function checkBoxEmpty(){
           console.log("$('.table  input').length"+ $('.table  input').length)
-        if($('.table  input').length == 1){
+        if($('.table  input').length == 0){
 
               console.log([].length);
             appendHtml([]);

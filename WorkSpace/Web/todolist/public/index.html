@@ -15,14 +15,14 @@
 
 
     <script type="text/javascript" src="javascripts/jquery.min.js"></script>
-    <script type="text/javascript" src="javascripts/bootstrap.min.js"></script>
-    <script type="text/javascript" src="javascripts/bootstrap-datetimepicker.min.js"></script>
-
+    <script type="text/javascript" src="javascripts/bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript" src="javascripts/bootstrap/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="javascripts/cookie.js"></script>
     <script type="text/javascript" src="javascripts/user.js"></script>
     <script type="text/javascript" src="javascripts/mission.js"></script>
 
     <style>
-        #login{
+       nav, #login{
             display: none;
         }
         #login{
@@ -47,8 +47,9 @@
         .login, .register{
             display:none;
         }
+
         .error{
-            margin-top: -2em;
+
             width:100%;
             height:2em;
             text-align:center;
@@ -75,9 +76,11 @@
             color:#468847;
         }
 
-        .form-control{
-            width:80%;
-        }
+        /*.form-control{*/
+            /*width:80%;*/
+        /*}*/
+
+
 
         .spinner {
             width: 100px;
@@ -115,6 +118,12 @@
             left: 4px;
         }
 
+        textarea.form-control{
+            width:80%;
+        }
+
+
+
     </style>
 </head>
 <body>
@@ -150,33 +159,18 @@
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                            <a href="#">Welcome</a>
+                            <a id="welcome" href="#">Welcome</a>
                         </li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown<strong class="caret"></strong></a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a href="#">Action</a>
-                                </li>
-                                <li>
-                                    <a href="#">Another action</a>
-                                </li>
-                                <li>
-                                    <a href="#">Something else here</a>
-                                </li>
-                                <li class="divider">
-                                </li>
-                                <li>
-                                    <a href="#">Separated link</a>
-                                </li>
-                            </ul>
+                        <li>
+                            <a id="logout" href="#">Logout</a>
                         </li>
+
                     </ul>
                 </div>
             </nav>
 
 
-            <div class="jumbotron" style="display:none">
+            <div id="home" class="jumbotron" style="display:none">
                 <h1>
                     TodoList
                 </h1>
@@ -184,12 +178,12 @@
                     This is a simple demo for you to build a to-do list. You can add some things you need todo immediately, and choose a time interval to finish it. Of course, you can check out your left time or left things at any time.Have fun!
                 </p>
                 <p>
-                    <a id="start-btn" class=" btn btn-primary btn-large" href="#">Start</a>
+                    <a id="start-btn" class=" btn btn-default btn-large" style="float:right;height:2.5em;width:7em;margin-right:10em;font-size:0.8em" href="#">Start</a>
                 </p>
             </div>
 
             <!-- 列表事项开始 -->
-            <div class="jumbotron" style="">
+            <div id="list-table" class="jumbotron" style="display:none">
             <div id="mission-container" class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title"><strong>Mission</strong></h3>
@@ -201,7 +195,7 @@
                     <th>
                     <div class="checkbox" style="margin-top:0px; margin-bottom:0px">
                         <label>
-                            <input type="checkbox" >
+
                         </label>
                     </div>
                     </th>
@@ -232,43 +226,6 @@
         </div>
     </div>
 </div>
-    <div class="container">
-    <div class="row clearfix">
-        <div class="col-md-4 column">
-            <h2>
-                Heading
-            </h2>
-            <p>
-                Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
-            </p>
-            <p>
-                <a class="btn" href="#">View details »</a>
-            </p>
-        </div>
-        <div class="col-md-4 column">
-            <h2>
-                Heading
-            </h2>
-            <p>
-                Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
-            </p>
-            <p>
-                <a class="btn" href="#">View details »</a>
-            </p>
-        </div>
-        <div class="col-md-4 column">
-            <h2>
-                Heading
-            </h2>
-            <p>
-                Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
-            </p>
-            <p>
-                <a class="btn" href="#">View details »</a>
-            </p>
-        </div>
-    </div>
-    </div>
 
 <!--  登陆注册弹出层 开始  -->
 <div id="login">
@@ -278,7 +235,7 @@
         <div class="login modal-content">
             <div class="modal-header">
                 <button type="button" class="login-close close">x</button>
-                <h1 class="text-center text-primary">login</h1>
+                <h1 class="text-center text-primary"style="color:black;">Login</h1>
             </div>
 
             <div class="modal-body">
@@ -292,9 +249,8 @@
                         <span class="remind"></span>
                     </div>
                     <div class="form-group">
-                        <button id="login-button" class=" btn btn-primary btn-lg btn-block">login</button>
-                        <span><a href="#">find</a></span>
-                        <span><a href="#" id="register-btn" class="pull-right">register</a></span>
+                        <button id="login-button" class=" btn btn-default  btn-lg btn-block">login</button>
+                        <span><a href="#" id="register-btn" class="pull-right" style="color:black;font-size:1.5em">register</a></span>
                     </div>
                     <div class="error" >
                         <span class="remind"></span>
@@ -309,7 +265,7 @@
         <div class="register modal-content">
             <div class="modal-header">
                 <button type="button" class="login-close close">x</button>
-                <h1 class="text-center text-primary">register</h1>
+                <h1 class="text-center text-primary" style="color:black;">Register</h1>
             </div>
          <div id="register-form " style="padding-top: 1em; height: auto ; overflow:hidden" >
             <form  id="register-form" class="form col-md-12 center-block">
@@ -326,9 +282,8 @@
                     <span class="remind"></span>
                 </div>
                 <div class="form-group">
-                    <button id="register-button" class="btn btn-primary btn-lg btn-block">register</button>
-                    <span><a href="#">find</a></span>
-                    <span><a href="#" id='login-btn' class="pull-right">login</a></span>
+                    <button id="register-button" class="btn btn- btn-lg btn-block">register</button>
+                    <span><a href="#" id='login-btn' class="pull-right" style="color:black;font-size:1.5em">login</a></span>
                 </div>
                 <div class="error" >
                     <span class="remind"></span>
