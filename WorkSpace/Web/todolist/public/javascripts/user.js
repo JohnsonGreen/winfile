@@ -153,7 +153,7 @@ $(function(){
                     inputLogInit();      //重新初始化所有检查变量
 
                     $('.alert>span').html('<strong>Login SUCCESS !  Congratulations!</strong> You can enjoy our service NOW !').show();
-                    $('.alert').slideDown(600);
+                    $('.alert').removeClass('alert-warning').addClass('alert-success').slideDown(600);
                     setTimeout(function(){
                         $('.alert').slideUp(600);
                     },3000);
@@ -254,7 +254,7 @@ $(function(){
                     inputRegInit();      //重新初始化所有检查变量
 
                     $('.alert>span').html('<strong>RGISTER SUCCESS !  Congratulations!</strong> You can enjoy our service NOW !').show();
-                    $('.alert').slideDown(600);
+                    $('.alert').removeClass('alert-warning').addClass('alert-success').slideDown(600);
                     setTimeout(function(){
                         $('.alert').slideUp(600);
                     },3000);

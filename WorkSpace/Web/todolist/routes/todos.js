@@ -56,8 +56,64 @@ router.get('/:user_id', function(req, res, next) {
       }else{
          res.json({ error:"data not found !"});
      }
+});
 
+
+router.get('/:user_id/:endTime',function(req,res,next){
+    var user = {};
+    user.user_id = req.params.user_id;
+    user.endTime = req.params.endTime;
+
+    console.log("user.user_id" + user.user_id );
+    console.log(" user.endTime" +  user.endTime );
+
+     if( user.user_id && user.endTime){
+         Todo.findByUserIdTime(user,function(err,data){
+             if(err){
+                 res.json({ error:"please try again !"});
+             } else{
+                 res.json(data);
+             }
+         });
+     }else{
+         res.json({ error:"data not found !"});
+     }
 
 });
+
+router.delete('/:user_id/:id', function(req, res, next) {
+
+    var ids = {};
+    ids.id = req.params.id;
+    ids.user_id = req.params.user_id;
+
+    Todo.delete(ids,function (err,data) {
+        if (err) {
+            res.json({ error:"please try again !"});
+        }else{
+            res.json(data);
+        }
+
+    });
+});
+
+
+router.patch('/:user_id/:id', function(req, res, next) {
+
+    var ids = {};
+    ids.id = req.params.id;
+    ids.user_id = req.params.user_id;
+
+    Todo.patch(ids,function (err,data) {
+        if (err) {
+            res.json({ error:"please try again !"});
+        }else{
+            res.json(data);
+        }
+
+    });
+});
+
+
 
 module.exports = router;

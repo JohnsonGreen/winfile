@@ -157,48 +157,56 @@ $(function(){
         }
     });
 
-
-
-
-
     /*************************今日明日及所有的条目结束************************************/
 
 
 
     /***************************新建任务提交开始*******************************/
 
-
      function appendHtml(todos){
+           $('#nothing-remind').remove();
+           if(todos.length == 0){
+               $('#mission-container').append(
 
-          for(var todo in todos){
+                   '<div id="nothing-remind" style="width:100%;display:inline-block;text-align:center">' +
+                       '<h2>There is nothing，try to add a new thing ╮(╯▽╰)╭</h2>'+
+                   '</div>'
+                );
+               $('#delete-things').hide();
+               $('#done-things').hide();
 
-              console.log(todo);
+           }else{
 
-              var start_time = stampToDate(parseInt(todos[todo].start_time));
-              var estimated_time = secondsToHour(parseInt(todos[todo].estimated_time));
-              var left_time = getLeftDate(parseInt(todos[todo].start_time),parseInt(todos[todo].estimated_time));
+               $('#delete-things').show();
+               $('#done-things').show();
 
-              $('.table').append('<tr>'+
-                  '<td>'+
-                  '<div id="'+ todos[todo].set_time + '"  itemid="'+todos[todo].id+'" class="checkbox" style="margin-top:0px; margin-bottom:0px">' +
-                  '<label >'+
-                  '<input type="checkbox" >'+
-                  '</label>'+
-                  '</div>'+
-                  '</td>'+
-                  '<td>'+ todos[todo].content +'</td><td>' + start_time + '</td><td>'+ estimated_time+ '</td><td><span id="item'+ todos[todo].id + '" >'+ left_time + '</span></td>'+
-                  '</tr>');
+               for(var todo in todos){
 
-          }
+                   var start_time = stampToDate(parseInt(todos[todo].start_time));
+                   var estimated_time = secondsToHour(parseInt(todos[todo].estimated_time));
+                   var left_time = getLeftDate(parseInt(todos[todo].start_time),parseInt(todos[todo].estimated_time));
 
-          var interId = setInterval(function(){
-              for(var todo in todos) {
-                  $('#item' + todos[todo].id).html(getLeftDate(parseInt(todos[todo].start_time), parseInt(todos[todo].estimated_time)));
-            }
+                   $('.table').append('<tr name='+todos[todo].id+'>'+
+                       '<td>'+
+                       '<div id="'+ todos[todo].set_time + '"  itemid="'+todos[todo].id+'" class="checkbox" style="margin-top:0px; margin-bottom:0px">' +
+                       '<label >'+
+                       '<input itemid="'+todos[todo].id+'" type="checkbox" >'+
+                       '</label>'+
+                       '</div>'+
+                       '</td>'+
+                       '<td>'+ todos[todo].content +'</td><td>' + start_time + '</td><td>'+ estimated_time+ '</td><td><span id="item'+ todos[todo].id + '" >'+ left_time + '</span></td>'+
+                       '</tr>');
 
-          },1000);
+               }
+               var interId = setInterval(function(){
+                   for(var todo in todos) {
+                       $('#item' + todos[todo].id).html(getLeftDate(parseInt(todos[todo].start_time), parseInt(todos[todo].estimated_time)));
+                   }
+               },1000);
+               intervalId.push(interId);
+           }
 
-          intervalId.push(interId);
+
 
       }
 
@@ -215,15 +223,6 @@ $(function(){
             console.log("x : " + x);
             console.log("timestamp : " + timestamp);
             console.log("小时 : " + (x - timestamp/1000)/3600);
-
-
-            //
-            // // 将当前时间换成时间格式字符串
-            // var newDate = new Date();
-            // newDate.setTime(timestamp * 1000);
-            // console.log(newDate.toDateString());
-
-
 
         }else{
            if(content.length > 100){
@@ -255,7 +254,7 @@ $(function(){
                        appendHtml(todos);    //添加新增项
 
                        $('.alert>span').html('<strong>Add SUCCESS !  </strong>').show();
-                       $('.alert').slideDown(600);
+                       $('.alert').removeClass('alert-warning').addClass('alert-success').slideDown(600);
                        setTimeout(function(){
                            $('.alert').slideUp(600);
                        },3000);
@@ -264,12 +263,6 @@ $(function(){
                        $('#addMissRem').removeClass('.success-letter').css({color:"#b94a48"}).html(data.error).show();
                    }
                });
-
-               //
-               // // 将当前时间换成时间格式字符串
-               // var newDate = new Date();
-               // newDate.setTime(timestamp * 1000);
-               // console.log(newDate.toDateString());
            }
         }
     });
@@ -277,14 +270,91 @@ $(function(){
     /***************************新建任务提交结束*******************************/
 
 
+    /***************************删除与完成按钮开始*******************************/
+
+      function checkAllBox(){
+          var itemArray = [];
+        $('.table  input:not(:first)').each(function(){
+
+              if($(this).is(':checked')){
+                  itemArray.push($(this).attr('itemid'));
+              }
+        });
+
+        console.log(itemArray);
+        return itemArray;
+    }
+
+    function checkBoxEmpty(){
+          console.log("$('.table  input').length"+ $('.table  input').length)
+        if($('.table  input').length == 1){
+
+              console.log([].length);
+            appendHtml([]);
+        }
+    }
+
+
+    function deleteOrDone(type){
+
+        var choose = '';
+        var sucRemind = '';
+        var failRemind=''
+        switch(type){
+            case 'delete':
+                choose='delete';
+                sucRemind='DELETE SUCCESS !  ';
+                failRemind='Please choose an item to delete!';
+                break;
+            case 'done':
+                choose='patch';
+                sucRemind='DONE SUCCESS !  ';
+                failRemind='Please choose an item to make it finished!';
+                break;
+        }
+
+        var itemArray = checkAllBox();
+        if(itemArray.length != 0){
+            for(var id in itemArray){
+
+                $.ajax({
+                    type: choose,
+                    url: '/api/todos/'+ user_id + '/'+ itemArray[id],
+                    success: function (data){
+                        if(! data.error){
+
+                        }
+                    }
+                });
+                $('tr[name="'+itemArray[id]+'"]').remove();
+            }
+            $('.alert>span').html('<strong>'+sucRemind+'</strong>').show();
+            $('.alert').removeClass('alert-warning').addClass('alert-success').slideDown(600);
+            setTimeout(function(){
+                $('.alert').slideUp(600);
+            },3000);
+
+            checkBoxEmpty(); //检查列表是否为空
+        }else{
+            $('.alert>span').html('<strong>'+failRemind+'</strong>').show();
+            $('.alert').removeClass('alert-success').addClass('alert-warning').slideDown(600);
+            setTimeout(function(){
+                $('.alert').slideUp(600);
+            },3000);
+        }
+    }
+
+     $('#delete-button').click(function(){
+          deleteOrDone('delete');
+     });
+
+    $('#done-button').click(function(){
+        deleteOrDone('done');
+    });
+
+    /***************************删除与完成按钮结束*******************************/
 
 
 
 
-
-
-
-
-
-
-})
+});
