@@ -13,6 +13,8 @@ import com.visualweibo.ssm.po.ItemsQueryVo;
  * @date 2017-2-9 下午11:42:00 
  * @version V1.0   
  */
+
+
 public interface ItemsService {
   
 	//商品查询列表

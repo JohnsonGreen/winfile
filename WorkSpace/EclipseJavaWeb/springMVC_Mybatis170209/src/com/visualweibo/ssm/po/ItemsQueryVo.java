@@ -1,6 +1,6 @@
 package com.visualweibo.ssm.po;
 /**   
- * @Title: ItmesQueryVo.java 
+ * @Title: ItemsQueryVo.java 
  * @Package com.visualweibo.ssm.po 
  * @Description: 商品的包装对象
  * @author cyh tjuchenheng@163.com  

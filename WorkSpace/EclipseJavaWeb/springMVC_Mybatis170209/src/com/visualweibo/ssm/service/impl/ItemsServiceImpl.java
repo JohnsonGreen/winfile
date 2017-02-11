@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+
 import com.visualweibo.ssm.mapper.ItemsMapperCustom;
 import com.visualweibo.ssm.po.ItemsCustom;
 import com.visualweibo.ssm.po.ItemsQueryVo;
@@ -17,6 +18,8 @@ import com.visualweibo.ssm.service.ItemsService;
  * @date 2017-2-9 下午11:46:58 
  * @version V1.0   
  */
+
+
 public class ItemsServiceImpl implements ItemsService{
     
 	
@@ -30,7 +33,7 @@ public class ItemsServiceImpl implements ItemsService{
 		//通过ItemCustom查询数据库
 		
 		
-		return itemsMapperCustom.findItmsList(itemsQueryVo);
+		return itemsMapperCustom.findItemsList(itemsQueryVo);
 	}
    
 	

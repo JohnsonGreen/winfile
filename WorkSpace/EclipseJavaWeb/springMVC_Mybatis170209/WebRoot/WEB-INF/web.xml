@@ -5,16 +5,16 @@
  
  <!-- 加载spring容器 -->
  
+ <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+ </listener>
+ 
  <context-param>
   <param-name>contextConfigLocation</param-name>
   <param-value>classpath:spring/applicationContext-*.xml</param-value>
  </context-param>
- <listener>
-    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
- </listener>
+ 
   
- 
- 
   <!-- springmvc 控制器 -->
   <servlet>
     <servlet-name>springmvc</servlet-name>
@@ -24,12 +24,11 @@
     
      <init-param>
       <param-name>contextConfigLocation</param-name>
-      <param-value>classpath:springmvc.xml</param-value> 
+      <param-value>classpath:spring/springmvc.xml</param-value> 
     </init-param>
-    
   </servlet>
   
-  
+
   <servlet-mapping>
    <servlet-name>springmvc</servlet-name>
    <!--

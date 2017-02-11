@@ -9,5 +9,5 @@ import com.visualweibo.ssm.po.ItemsQueryVo;
 public interface ItemsMapperCustom {
     //商品的查询列表
 	
-	public List<ItemsCustom> findItmsList(ItemsQueryVo itemsQueryVo) throws Exception;
+	 List<ItemsCustom> findItemsList(ItemsQueryVo itemsQueryVo) throws Exception;
 }
