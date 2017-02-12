@@ -18,7 +18,7 @@
 		
 	<!--定义spring框架扫描注解类的包--> 
 	<context:component-scan base-package="com.visualweibo.ssm.controller"/>	
-    <mvc:annotation-driven/>
+    <mvc:annotation-driven conversion-service="conversionService"/>
     
      <!-- 处理器适配器
                    所有适配器都实现HandlerAdapter接口 
@@ -32,6 +32,18 @@
      <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
        <property name="prefix" value="/WEB-INF/jsp/"/>
        <property name="suffix" value=".jsp"/>
+     </bean>
+     
+     <!-- 自定义参数绑定 -->
+     <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+         <!-- 转换器 -->
+         <property name="converters">
+             <list>
+                <!-- 日期类型转换 -->
+                <bean class="com.visualweibo.ssm.controller.converter.CustomDateConverter"/>
+                
+             </list>
+         </property>
      </bean>
      
      
