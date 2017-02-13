@@ -35,6 +35,14 @@ public class ItemsQueryVo {
 	public void setItemsCustom(ItemsCustom itemsCustom) {
 		this.itemsCustom = itemsCustom;
 	}
+
+	public List<ItemsCustom> getItemsList() {
+		return itemsList;
+	}
+
+	public void setItemsList(List<ItemsCustom> itemsList) {
+		this.itemsList = itemsList;
+	}
 	
 	
 }

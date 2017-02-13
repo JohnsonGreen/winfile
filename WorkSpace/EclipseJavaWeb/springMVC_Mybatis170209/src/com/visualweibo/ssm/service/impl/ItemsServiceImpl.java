@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import sun.print.resources.serviceui;
 
 
+import com.visualweibo.ssm.exception.CustomException;
 import com.visualweibo.ssm.mapper.ItemsMapper;
 import com.visualweibo.ssm.mapper.ItemsMapperCustom;
 import com.visualweibo.ssm.po.Items;
@@ -53,11 +54,23 @@ public class ItemsServiceImpl implements ItemsService{
 		
 		Items items = itemsMapper.selectByPrimaryKey(id);
 		
-		//对商品信息进行业务处理
-		ItemsCustom itemsCustom = new ItemsCustom();
 		
-		//将items的属性值拷贝到itemsCustom, 通过反射将一个对象的值赋值个另外一个对象（前提是对象中属性的名字相同）。
-		BeanUtils.copyProperties(items, itemsCustom);
+		//判断商品是否为空，根据id没有查询到商品，抛出异常，提示用户商品信息不存在
+		if(items == null){
+			throw new CustomException("修改的商品信息不存在！");
+		}
+		
+		//对商品信息进行业务处理
+		ItemsCustom itemsCustom = null;
+	
+		
+		//将items的属性值拷贝到itemsCustom, 通过反射将一个对象的值赋值个另外一个对象（前提是对象中属性的名字相同）
+		if(items != null){
+			itemsCustom = new ItemsCustom();
+			BeanUtils.copyProperties(items, itemsCustom);
+		}
+		
+		
 		
 		return itemsCustom;
 		

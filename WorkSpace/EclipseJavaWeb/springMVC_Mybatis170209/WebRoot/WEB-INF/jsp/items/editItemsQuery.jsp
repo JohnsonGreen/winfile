@@ -8,14 +8,28 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>查询商品列表</title>
+
+<script type="text/javascript">
+  function queryItems(){
+	  document.itemsForm.action="${pageContext.request.contextPath }/items/queryItems.action";
+	  document.itemsForm.submit();
+	  
+  }
+  
+  function editItemsAllSubmit(){
+	  document.itemsForm.action="${pageContext.request.contextPath }/items/editItemsAllSubmit.action";
+	  document.itemsForm.submit();
+  }
+
+</script>
 </head>
 <body> 
-<form action="${pageContext.request.contextPath }/items/deleteByIds.do" method="post">
+<form name="itemsForm" action="${pageContext.request.contextPath }/items/editItemsAllSubmit.action" method="post">
 查询条件：
 <table width="100%" border=1>
 <tr>
-<td><input type="submit" value="查询"/></td>
-<td><input type="submit" value="批量删除"/></td>
+<td><input type="submit" value="查询" onclick="queryItems()")/></td>
+<td><input type="submit" value="批量修改提交" /></td>
 </tr>
 </table>
 商品列表：
@@ -29,18 +43,18 @@
 	<td>商品描述</td>
 	<td>操作</td>
 </tr>
-<c:forEach items="${itemsList }" var="item">
+<c:forEach items="${itemsList }" var="item" varStatus="status">
 <tr>
-	<td>
-	<input type="checkbox" name="id" value="${item.id }">
-	</td>
-	<td>${item.name }</td>
-	<td>
+	
+	<td><input name="itemsList[${status.index }].name" value="${item.name }" /></td>
+	
+	<%-- <td>
 	<img id='imgSize1ImgSrc' src='${picPath }${item.pic }'  height="100" width="100" />
-	</td>
-	<td>${item.price }</td>
-	<td><fmt:formatDate value="${itemsCustom.createtime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
-	<td>${item.detail }</td>
+	</td> --%>
+	
+	<td><input name="itemsList[${status.index }].price" value="${item.price }"/></td>
+	<td><input name="itemsList[${status.index }].createtime" value="<fmt:formatDate value="${itemsCustom.createtime}" pattern="yyyy-MM-dd HH:mm:ss"/>"/></td>
+	<td><input name="itemsList[${status.index }].detail" value="${item.detail }"/></td>
 	
 	<td><a href="${pageContext.request.contextPath }/items/editItems.action?id=${item.id}">修改</a>
 	<a href="${pageContext.request.contextPath }/items/deleteByID.do?id=${item.id}">删除</a>
