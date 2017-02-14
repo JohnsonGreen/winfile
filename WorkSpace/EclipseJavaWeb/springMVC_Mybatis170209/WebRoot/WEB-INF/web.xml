@@ -2,6 +2,29 @@
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
   <display-name>springMVC_Mybatis170209</display-name>
   
+ <!-- 缓存设置 
+  <filter>
+   <filter-name>oscache</filter-name>
+   <filter-calss>com.opensymphony.oscache.web.filter.CacheFilter</filter-calss>
+   <init-param>
+      设置一个小时同步一次目录
+     <param-name>time</param-name>
+     <param-value>3600</param-value>
+   </init-param>
+   <init-param>
+      存储在application中
+     <param-name>scope</param-name>
+     <param-value>application</param-value>
+   </init-param>
+  
+  </filter>
+  
+  items下的页面都被缓存
+  <filter-mapping>
+   <filter-name>oscache</filter-name>
+   <url-pattern>/items/*</url-pattern>
+  </filter-mapping> -->
+  
   
   
   <!-- 解决post乱码问题-->

@@ -10,6 +10,11 @@
 <title>查询商品列表</title>
 </head>
 <body> 
+
+<c:if test="${username != null }">
+     当前用户：${username } <a href="${pageContext.request.contextPath }/logout.action">退出</a>
+</c:if>
+
 <form action="${pageContext.request.contextPath }/items/deleteByIds.do" method="post">
 查询条件：
 <%-- 商品类型：
