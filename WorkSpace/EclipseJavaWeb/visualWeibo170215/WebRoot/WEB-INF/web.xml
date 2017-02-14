@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <display-name>springMVC_Mybatis170209</display-name>
+  
+ <!-- 缓存设置 
+  <filter>
+   <filter-name>oscache</filter-name>
+   <filter-calss>com.opensymphony.oscache.web.filter.CacheFilter</filter-calss>
+   <init-param>
+      设置一个小时同步一次目录
+     <param-name>time</param-name>
+     <param-value>3600</param-value>
+   </init-param>
+   <init-param>
+      存储在application中
+     <param-name>scope</param-name>
+     <param-value>application</param-value>
+   </init-param>
+  
+  </filter>
+  
+  items下的页面都被缓存
+  <filter-mapping>
+   <filter-name>oscache</filter-name>
+   <url-pattern>/items/*</url-pattern>
+  </filter-mapping> -->
+  
+  
+  
+  <!-- 解决post乱码问题-->
+  <filter>
+    <filter-name>characterEncoding</filter-name>
+  <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+   <init-param>
+    <param-name>encoding</param-name>
+    <param-value>UTF-8</param-value>
+   </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>characterEncoding</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
+ 
+ <!-- 加载spring容器 -->
+ 
+ <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+ </listener>
+ 
+ <context-param>
+  <param-name>contextConfigLocation</param-name>
+  <param-value>classpath:spring/applicationContext-*.xml</param-value>
+ </context-param>
+ 
+  
+  <!-- springmvc 控制器 -->
+  <servlet>
+    <servlet-name>springmvc</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <!-- contextConfigLocation配置springmvc加载的配置文件（配置处理器映射器、适配器等等
+    如果不配置，默认加载的是 /WEB-INF/servlet名称-servlet.xml/ (springmvc-servlet.xml)-->
+    
+     <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath:spring/springmvc.xml</param-value> 
+    </init-param>
+  </servlet>
+ 
+  <servlet-mapping>
+   <servlet-name>springmvc</servlet-name>
+   <!--
+           第一种：*.action 访问.action结尾有DispatchServlet进行解析
+          第二种：/，所有访问的地址都由DipatcherServlet进行解析，对于静态文件的解析需要配置不让DispatcherServlet解析
+          这种方式可以实现RESTful风格的url
+          第三种：/*,这种配置不对，最终需要转发到jsp页面时，仍然会由DisaptcherServlet解析jsp，不能根据jsp页面找到handler，会报错
+    -->
+    <url-pattern>*.action</url-pattern>
+  </servlet-mapping>
+  
+  
+  
+  
+    <!-- springmvc 控制器 RESTful接口 -->
+  <servlet>
+    <servlet-name>springmvc_rest</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class> 
+     <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath:spring/springmvc.xml</param-value> 
+    </init-param>
+  </servlet>
+ 
+  <servlet-mapping>
+   <servlet-name>springmvc_rest</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+  
+  
+ 
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>
