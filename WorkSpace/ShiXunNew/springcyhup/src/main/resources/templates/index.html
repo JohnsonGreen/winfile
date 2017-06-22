@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="/webuploader/webuploader.css"/>
+   <!-- <link rel="stylesheet" type="text/css" href="css/style.css" />-->
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="/css/fileinput.css" />
+    <style>
+         .progress-float{
+             position:absolute;
+             width:600px;
+         }
+
+        .progress-father{
+            position:relative;
+        }
+
+        .display-none{
+            display:none;
+        }
+
+
+    </style>
+</head>
+<body>
+<div class="container ">
+    <div style="margin-top:240px;margin-bottom:auto;">
+        <div class="row" >
+            <div class="col-md-2"></div>
+            <div class="col-md-8 col-sm-12">
+                <div class="progress-father">
+                    <div class="progress-float">
+                    <div class="input-group">
+                        <div tabindex="-1" class="form-control">
+                        </div>
+                        <div class="input-group-btn">
+                            <div class="btn btn-primary btn-file"><i class="glyphicon glyphicon-folder-open"></i> &nbsp;上传
+                                <input id="file" class="file" type="file" multiple="" data-preview-file-type="any"
+                                       data-upload-url="#"  data-preview-file-icon=""></div>
+                        </div>
+                    </div>
+                    </div>
+
+                    <div id="progress" class="progress-float display-none">
+                        <div class="input-group">
+                        <div class="progress form-control">
+                            <div class="progress-bar" role="progressbar" aria-valuenow="2" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: 2%;">
+                                2%
+                            </div>
+                        </div>
+                            <div class="input-group-btn">
+                                <div class="btn btn-primary btn-file"><i class="glyphicon glyphicon-folder-open"></i> &nbsp;取消
+                                    <input id="file-6" class="file" type="file" multiple="" data-preview-file-type="any"
+                                           data-upload-url="#"  data-preview-file-icon=""></div>
+                            </div>
+                    </div>
+                </div>
+
+
+                </div>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    </div>
+
+</div>
+<script type="text/javascript" src="/js/jquery.js"></script>
+<script>
+    var i = 0;
+
+    $('#file').click(function(e){
+        e.preventDefault();                           //取消点击事件的默认行为
+        $('#progress').fadeIn(1000);
+        var timer = setInterval(function(){    //设置时间
+            if(i == 100){
+                clearInterval(timer);
+               //$("#progress").fadeTo("slow",0.25);         //动画  变透明
+                $("#progress").fadeOut(1000);         //动画  变透明
+            }else{
+                $(".progress-bar").css("width",i+'%').html((i+=5) + "%");
+
+            }
+        },1000);
+    });
+
+
+
+</script>
+<!--
+<script type="text/javascript" src="/js/jquery.js"></script>
+<script type="text/javascript" src="/webuploader/webuploader.html5only.js"></script>
+<script type="text/javascript" src="/js/upload.js"></script>
+
+-->
+</body>
+
+</html>

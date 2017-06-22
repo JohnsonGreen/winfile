@@ -1,0 +1,53 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+     <script src="/js/jquery.js" type="text/javascript"></script>
+     <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css"/>
+     </head>
+ <body>
+         <form id='fForm' action="http://localhost:8080/upload.html" enctype="multipart/form-data" target="uploadf" method="post">
+                      <div class="control-group">
+                         <label class="control-label">上传文件:</label>
+
+                         <div class="controls">
+                             <input type="file"  name="fileup"  id="fileup" style="width:550px">
+                         </div>
+                          <div class="controls">
+                              <input type="text"  name="abc" style="width:550px">
+                          </div>
+
+                     </div>
+                      <div class="control-group">
+                         <div class="controls">
+                         <button type="button" id="subbut" class="btn">submit</button>
+                         </div>
+                     </div>
+             </form>
+        <iframe name="uploadf" style="display:none"></iframe>
+ </body>
+ </html>
+
+ <script >
+     $(document).ready(function(){
+             $('#subbut').bind('click',
+                     function(){
+                         $('#fForm').submit();
+                         var eventFun = function(){
+                             $.ajax({
+                                 type: 'GET',
+                                 url: '/process.json',
+                                data: {},
+                                 dataType: 'json',
+                                 success : function(data){
+                                        console.log(data);
+                                         $('#proBar').css('width',data.pBytesRead+''+'%');
+                                         $('#proBar').empty();
+                                        $('#proBar').append(data.show);
+                                        if(data.rate == 100){
+                                             window.clearInterval(intId);
+                                         }
+                        }});};
+                        // var intId = window.setInterval(eventFun,500);
+             });
+        });
+    </script>
